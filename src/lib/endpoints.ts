@@ -34,6 +34,20 @@ export const API_ENDPOINTS = {
     BY_CATEGORY: (categoryId: string) => `${API_BASE_URL}/subcategories?categoryId=${categoryId}`,
   },
 
+  // Bulk Orders & Order Tracking
+  ORDERS: {
+    LIST: `${API_BASE_URL}/orders`,
+    CREATE: `${API_BASE_URL}/orders`,
+    BY_ID: (id: string) => `${API_BASE_URL}/orders/${id}`,
+  },
+
+  // Customer Support & Chat
+  SUPPORT: {
+    LIST: `${API_BASE_URL}/support`,
+    CREATE: `${API_BASE_URL}/support`,
+    ADD_MESSAGE: (id: string) => `${API_BASE_URL}/support/${id}/messages`,
+  },
+
   // Health
   HEALTH: `${API_BASE_URL}/health`,
 } as const;

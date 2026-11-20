@@ -14,6 +14,26 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   focusRingColor?: string;
 }
 
+const renderLabel = (label: string, required?: boolean) => {
+  if (!label) return null;
+  if (label.includes('*')) {
+    const parts = label.split('*');
+    return (
+      <>
+        {parts[0]}
+        <span className="text-rose-500 font-bold ml-0.5">*</span>
+        {parts.slice(1).join('*')}
+      </>
+    );
+  }
+  return (
+    <>
+      {label}
+      {required && <span className="text-rose-500 font-bold ml-0.5">*</span>}
+    </>
+  );
+};
+
 export const Select: React.FC<SelectProps> = ({
   label,
   error,
@@ -30,7 +50,7 @@ export const Select: React.FC<SelectProps> = ({
     <div className="w-full space-y-1.5">
       {label && (
         <label htmlFor={selectId} className="block text-xs font-semibold text-zinc-700">
-          {label}
+          {renderLabel(label, props.required)}
         </label>
       )}
 

@@ -5,12 +5,33 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
+const renderLabel = (label: string, required?: boolean) => {
+  if (!label) return null;
+  if (label.includes('*')) {
+    const parts = label.split('*');
+    return (
+      <>
+        {parts[0]}
+        <span className="text-rose-500 font-bold ml-0.5">*</span>
+        {parts.slice(1).join('*')}
+      </>
+    );
+  }
+  return (
+    <>
+      {label}
+      {required && <span className="text-rose-500 font-bold ml-0.5">*</span>}
+    </>
+  );
+};
+
 export const Input: React.FC<InputProps> = ({
   label,
   error,
   className = '',
   id,
   style,
+  required,
   ...props
 }) => {
   const inputId = id || props.name;
@@ -19,11 +40,12 @@ export const Input: React.FC<InputProps> = ({
     <div className="w-full space-y-1">
       {label && (
         <label htmlFor={inputId} className="block text-xs font-semibold uppercase tracking-wider text-zinc-700">
-          {label}
+          {renderLabel(label, required)}
         </label>
       )}
       <input
         id={inputId}
+        required={required}
         style={{
           backgroundColor: '#ffffff',
           color: '#18181b',

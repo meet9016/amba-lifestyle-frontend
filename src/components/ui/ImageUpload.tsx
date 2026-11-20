@@ -11,6 +11,26 @@ interface ImageUploadProps {
   required?: boolean;
 }
 
+const renderLabel = (label: string, required?: boolean) => {
+  if (!label) return null;
+  if (label.includes('*')) {
+    const parts = label.split('*');
+    return (
+      <>
+        {parts[0]}
+        <span className="text-rose-500 font-bold ml-0.5">*</span>
+        {parts.slice(1).join('*')}
+      </>
+    );
+  }
+  return (
+    <>
+      {label}
+      {required && <span className="text-rose-500 font-bold ml-0.5">*</span>}
+    </>
+  );
+};
+
 export const ImageUpload: React.FC<ImageUploadProps> = ({
   label = 'Product Image',
   value,
@@ -88,7 +108,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     <div className="w-full space-y-1.5">
       {label && (
         <label className="block text-xs font-semibold text-zinc-700">
-          {label} {required && <span className="text-amber-700">*</span>}
+          {renderLabel(label, required)}
         </label>
       )}
 

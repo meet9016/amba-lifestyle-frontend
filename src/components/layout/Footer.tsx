@@ -1,58 +1,144 @@
 import React from 'react';
 import Link from 'next/link';
+import { ShieldCheck, Truck, RotateCcw, Award, Globe, HelpCircle, FileText, CheckCircle2 } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-zinc-50 text-zinc-600 border-t border-zinc-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-2xl font-bold tracking-widest text-zinc-900 uppercase">AMBA</span>
-            <span className="text-xs tracking-widest font-sans font-semibold text-amber-600 uppercase">LIFESTYLE</span>
+    <footer className="bg-stone-900 text-zinc-400 border-t border-zinc-800 text-xs">
+      {/* 1. Alibaba Global Trust Strip */}
+      <div className="border-b border-zinc-800 py-6 bg-stone-950">
+        <div className="w-full px-4 sm:px-8 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-zinc-300">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="w-6 h-6 text-amber-500 shrink-0" />
+            <div>
+              <p className="font-bold text-white text-xs">Amba Trade Assurance</p>
+              <p className="text-[11px] text-zinc-400">Escrow payment & quality protection</p>
+            </div>
           </div>
-          <p className="text-sm text-zinc-500">
-            Curated handcrafted lifestyle, ethnic apparel, artisanal home décor, and organic living essentials.
-          </p>
-        </div>
 
-        <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-900 mb-4">Shop Collections</h4>
-          <ul className="space-y-2.5 text-sm">
-            <li><Link href="/category/women" className="hover:text-zinc-900 transition-colors">Women's Ethnic & Fusion</Link></li>
-            <li><Link href="/category/men" className="hover:text-zinc-900 transition-colors">Men's Handloom Kurtas</Link></li>
-            <li><Link href="/category/home-living" className="hover:text-zinc-900 transition-colors">Artisanal Home & Living</Link></li>
-            <li><Link href="/category/crafts" className="hover:text-zinc-900 transition-colors">Indian Handcrafts</Link></li>
-          </ul>
-        </div>
+          <div className="flex items-center gap-3">
+            <Award className="w-6 h-6 text-amber-500 shrink-0" />
+            <div>
+              <p className="font-bold text-white text-xs">Verified Artisan Looms</p>
+              <p className="text-[11px] text-zinc-400">100% Craftmark & Handloom certified</p>
+            </div>
+          </div>
 
-        <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-900 mb-4">Customer Care</h4>
-          <ul className="space-y-2.5 text-sm">
-            <li><Link href="/orders" className="hover:text-zinc-900 transition-colors">Track Your Order</Link></li>
-            <li><Link href="/shipping" className="hover:text-zinc-900 transition-colors">Shipping & Delivery</Link></li>
-            <li><Link href="/returns" className="hover:text-zinc-900 transition-colors">Returns & Exchange</Link></li>
-            <li><Link href="/contact" className="hover:text-zinc-900 transition-colors">Contact Support</Link></li>
-          </ul>
-        </div>
+          <div className="flex items-center gap-3">
+            <Truck className="w-6 h-6 text-amber-500 shrink-0" />
+            <div>
+              <p className="font-bold text-white text-xs">Insured Express Logistics</p>
+              <p className="text-[11px] text-zinc-400">Doorstep Pan-India air tracking</p>
+            </div>
+          </div>
 
-        <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-zinc-900 mb-4">Become a Vendor</h4>
-          <p className="text-sm text-zinc-500 mb-3">
-            Are you an artisan or designer? Partner with Amba Lifestyle and showcase your crafts to thousands of patrons.
-          </p>
-          <a
-            href="http://localhost:3002"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block text-xs font-semibold text-amber-600 hover:text-amber-700 underline"
-          >
-            Visit Vendor Portal &rarr;
-          </a>
+          <div className="flex items-center gap-3">
+            <RotateCcw className="w-6 h-6 text-amber-500 shrink-0" />
+            <div>
+              <p className="font-bold text-white text-xs">7-Day Return Guarantee</p>
+              <p className="text-[11px] text-zinc-400">Hassle-free replacement & refund</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-zinc-200 py-6 text-center text-xs text-zinc-500">
-        &copy; 2026 Amba Lifestyle Private Limited. All rights reserved.
+      {/* 2. Main Alibaba Multi-column Footer */}
+      <div className="w-full px-4 sm:px-8 lg:px-12 py-12 grid grid-cols-1 md:grid-cols-5 gap-8">
+        {/* Col 1: Brand & Slogan */}
+        <div className="space-y-4 md:col-span-1">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-serif font-black text-lg">
+              A
+            </div>
+            <span className="font-serif text-xl font-black tracking-tight text-white uppercase">
+              AMBA<span className="text-amber-500">.COM</span>
+            </span>
+          </div>
+          <p className="text-zinc-400 text-xs leading-relaxed">
+            India's leading artisanal B2B and retail marketplace. Connecting conscious global patrons directly with authentic master craftspeople and weavers.
+          </p>
+          <div className="text-[11px] text-zinc-500">
+            Certified by Handloom Board & Craftmark India.
+          </div>
+        </div>
+
+        {/* Col 2: Sourcing on Amba */}
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5">
+            Sourcing on Amba
+          </h4>
+          <ul className="space-y-2 text-xs">
+            <li><a href="/#categories" className="hover:text-amber-400 transition-colors">All Craft Categories</a></li>
+            <li><a href="/#rfq" className="hover:text-amber-400 transition-colors">Request for Quotation (RFQ)</a></li>
+            <li><a href="/#ready-to-ship" className="hover:text-amber-400 transition-colors">Ready to Ship Inventory</a></li>
+            <li><a href="/#customized" className="hover:text-amber-400 transition-colors">Customized Artisan OEM/ODM</a></li>
+            <li><a href="/#pavilions" className="hover:text-amber-400 transition-colors">Regional Craft Pavilions</a></li>
+          </ul>
+        </div>
+
+        {/* Col 3: Trade & Protection */}
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5">
+            Trade & Security
+          </h4>
+          <ul className="space-y-2 text-xs">
+            <li><a href="/#trade-assurance" className="hover:text-amber-400 transition-colors">Trade Assurance Guarantee</a></li>
+            <li><Link href="/product/preview" className="hover:text-amber-400 transition-colors">Escrow Payment Protection</Link></li>
+            <li><a href="/#trade-assurance" className="hover:text-amber-400 transition-colors">Pre-shipment Inspection</a></li>
+            <li><a href="/#trade-assurance" className="hover:text-amber-400 transition-colors">Logistics & Tracking</a></li>
+            <li><a href="/#trade-assurance" className="hover:text-amber-400 transition-colors">Dispute & Refund Policy</a></li>
+          </ul>
+        </div>
+
+        {/* Col 4: Sell with Us (Vendor Partner) */}
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5">
+            Sell on Amba
+          </h4>
+          <ul className="space-y-2 text-xs">
+            <li>
+              <a
+                href="http://localhost:3002"
+                target="_blank"
+                rel="noreferrer"
+                className="text-amber-400 hover:text-amber-300 font-bold"
+              >
+                Artisan Vendor Portal &rarr;
+              </a>
+            </li>
+            <li><Link href="/add-product" className="hover:text-amber-400 transition-colors">Submit Product for Review</Link></li>
+            <li><a href="http://localhost:3002" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition-colors">Verified Supplier Accreditations</a></li>
+            <li><a href="http://localhost:3002" target="_blank" rel="noreferrer" className="hover:text-amber-400 transition-colors">Direct Payouts & Banking</a></li>
+          </ul>
+        </div>
+
+        {/* Col 5: Customer Care & App */}
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-3.5">
+            Buyer Care & Concierge
+          </h4>
+          <ul className="space-y-2 text-xs">
+            <li><Link href="/login" className="hover:text-amber-400 transition-colors">Buyer Account Sign In</Link></li>
+            <li><Link href="/register" className="hover:text-amber-400 transition-colors">Join as Registered Buyer</Link></li>
+            <li><span className="text-zinc-500">Concierge Desk: contact@ambalifestyle.com</span></li>
+            <li><span className="text-zinc-500">Toll Free: 1800-AMBA-INDIA</span></li>
+            <li className="pt-2 text-amber-500 font-bold">Fast Pan-India Delivery via Blue Dart Air</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* 3. Bottom Legal & Copyright Bar */}
+      <div className="border-t border-zinc-800 py-6 text-center text-zinc-500 text-[11px]">
+        <div className="w-full px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>&copy; 2026 Amba Lifestyle Marketplace Private Limited. Alibaba-inspired Architecture. All rights reserved.</p>
+          <div className="flex items-center gap-4 text-zinc-400">
+            <span className="hover:text-white cursor-pointer">Privacy Policy</span>
+            <span>&bull;</span>
+            <span className="hover:text-white cursor-pointer">Terms of Sourcing</span>
+            <span>&bull;</span>
+            <span className="hover:text-white cursor-pointer">Intellectual Property Rights</span>
+          </div>
+        </div>
       </div>
     </footer>
   );

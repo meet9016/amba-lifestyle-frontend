@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { apiClient, API_ENDPOINTS } from '@/lib/api';
 import { registerSchema } from '@/lib/validations/auth';
-import { Sparkles, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Sparkles, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, HeartHandshake, Award } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -70,7 +70,6 @@ export default function RegisterPage() {
 
       if (res.data?.success || res.status === 201) {
         setIsSuccess(true);
-        // Store session if token returned
         if (res.data?.data?.token) {
           localStorage.setItem('token', res.data.data.token);
         }
@@ -92,140 +91,165 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-amber-50/30 text-zinc-900">
+    <div className="min-h-screen flex flex-col bg-amber-50/30 text-zinc-900 w-full">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-md bg-white border border-amber-100/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-amber-950/5">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Connoisseur Club</span>
-            </div>
-            <h1 className="font-serif text-2xl font-bold text-zinc-900">
-              Create Your Account
-            </h1>
-            <p className="text-xs text-zinc-500 mt-1.5">
-              Join Amba Lifestyle for exclusive artisan curations, handloom previews, and priority bespoke orders.
-            </p>
-          </div>
-
-          {/* Success State */}
-          {isSuccess ? (
-            <div className="py-8 text-center space-y-3">
-              <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-full flex items-center justify-center mx-auto text-emerald-600">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <h2 className="font-bold text-base text-zinc-900">Welcome to Amba Lifestyle!</h2>
-              <p className="text-xs text-zinc-500">
-                Your customer account has been registered successfully. Redirecting you to the boutique...
+      <main className="flex-1 w-full flex items-center justify-center px-4 sm:px-8 lg:px-12 py-10 lg:py-16">
+        <div className="w-full max-w-5xl bg-white border border-amber-100/90 rounded-3xl shadow-2xl shadow-amber-950/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
+          {/* Left Brand Showcase (5 cols) */}
+          <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-10 bg-gradient-to-br from-amber-950 via-amber-900 to-stone-900 text-white relative">
+            <div className="space-y-4">
+              <span className="font-serif text-2xl font-black tracking-widest uppercase block">
+                AMBA <span className="text-amber-400 font-sans text-xs">LIFESTYLE</span>
+              </span>
+              <h2 className="text-2xl font-serif font-bold text-amber-50 leading-snug pt-4">
+                Join India&apos;s Most Discerning Craft Connoisseurs.
+              </h2>
+              <p className="text-xs text-amber-100/80 leading-relaxed">
+                Unlock handcrafted seasonal edits, artisan previews, and member-only bespoke creations directly from master guilds.
               </p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {generalError && (
-                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl flex items-start gap-2 text-xs font-medium">
-                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                  <span>{generalError}</span>
+
+            <div className="space-y-3.5 pt-8 border-t border-amber-800/60 text-xs text-amber-200">
+              <div className="flex items-center gap-2.5">
+                <Award className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Complimentary Member Shipping on All Orders</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>100% Certified Handcrafted Authenticity</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <HeartHandshake className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Direct Artisan Fair-Trade Support</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Form Area (7 cols) */}
+          <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
+            {/* Header */}
+            <div className="mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Connoisseur Club</span>
+              </div>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900">
+                Create Your Account
+              </h1>
+              <p className="text-xs text-zinc-500 mt-1">
+                Enter your details to join the Amba Lifestyle patron community.
+              </p>
+            </div>
+
+            {/* Success State */}
+            {isSuccess ? (
+              <div className="py-8 text-center space-y-3">
+                <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
-              )}
-
-              <Input
-                label="Full Name *"
-                name="name"
-                type="text"
-                placeholder="e.g. Ananya Sharma"
-                value={formData.name}
-                onChange={handleInputChange}
-                error={formErrors.name}
-                className="bg-white text-zinc-900 border-zinc-200"
-              />
-
-              <Input
-                label="Email Address *"
-                name="email"
-                type="email"
-                placeholder="ananya@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                error={formErrors.email}
-                className="bg-white text-zinc-900 border-zinc-200"
-              />
-
-              <Input
-                label="Phone Number (Optional)"
-                name="phone"
-                type="tel"
-                placeholder="+91 98765 43210"
-                value={formData.phone}
-                onChange={handleInputChange}
-                error={formErrors.phone}
-                className="bg-white text-zinc-900 border-zinc-200"
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input
-                  label="Password *"
-                  name="password"
-                  type="password"
-                  placeholder="At least 6 chars"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  error={formErrors.password}
-                  className="bg-white text-zinc-900 border-zinc-200"
-                />
-
-                <Input
-                  label="Confirm Password *"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Repeat password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  error={formErrors.confirmPassword}
-                  className="bg-white text-zinc-900 border-zinc-200"
-                />
-              </div>
-
-              {/* Guarantees */}
-              <div className="pt-2 flex items-center justify-between text-[11px] text-zinc-500 border-t border-zinc-100">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 100% Data Privacy
-                </span>
-                <span className="flex items-center gap-1">
-                  <HeartHandshake className="w-3.5 h-3.5 text-amber-600" /> Artisan Community
-                </span>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-semibold shadow-md shadow-amber-900/10 flex items-center justify-center gap-2 text-sm"
-              >
-                {isSubmitting ? (
-                  <span>Creating Account...</span>
-                ) : (
-                  <>
-                    <span>Create Account</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </Button>
-
-              <div className="text-center pt-2">
+                <h2 className="font-bold text-base text-zinc-900">Welcome to Amba Lifestyle!</h2>
                 <p className="text-xs text-zinc-500">
-                  Already have an account?{' '}
-                  <Link
-                    href="/login"
-                    className="font-semibold text-amber-800 hover:text-amber-900 underline underline-offset-4"
-                  >
-                    Sign In
-                  </Link>
+                  Your customer account has been registered successfully. Redirecting to boutique...
                 </p>
               </div>
-            </form>
-          )}
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-3.5">
+                {generalError && (
+                  <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl flex items-start gap-2 text-xs font-medium">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <span>{generalError}</span>
+                  </div>
+                )}
+
+                <Input
+                  label="Full Name *"
+                  name="name"
+                  type="text"
+                  placeholder="e.g. Ananya Sharma"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  error={formErrors.name}
+                  className="bg-white text-zinc-900 border-zinc-200"
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Email Address *"
+                    name="email"
+                    type="email"
+                    placeholder="ananya@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    error={formErrors.email}
+                    className="bg-white text-zinc-900 border-zinc-200"
+                  />
+
+                  <Input
+                    label="Phone (Optional)"
+                    name="phone"
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    error={formErrors.phone}
+                    className="bg-white text-zinc-900 border-zinc-200"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Password *"
+                    name="password"
+                    type="password"
+                    placeholder="At least 6 chars"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    error={formErrors.password}
+                    className="bg-white text-zinc-900 border-zinc-200"
+                  />
+
+                  <Input
+                    label="Confirm Password *"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Repeat password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    error={formErrors.confirmPassword}
+                    className="bg-white text-zinc-900 border-zinc-200"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-semibold shadow-md shadow-amber-900/10 flex items-center justify-center gap-2 text-sm mt-2"
+                >
+                  {isSubmitting ? (
+                    <span>Creating Account...</span>
+                  ) : (
+                    <>
+                      <span>Create Account</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
+
+                <div className="text-center pt-2">
+                  <p className="text-xs text-zinc-500">
+                    Already have an account?{' '}
+                    <Link
+                      href="/login"
+                      className="font-semibold text-amber-800 hover:text-amber-900 underline underline-offset-4"
+                    >
+                      Sign In
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
       </main>
 
@@ -233,4 +257,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-

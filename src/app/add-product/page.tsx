@@ -233,7 +233,7 @@ export default function AddProductPage() {
 
       {/* Breadcrumb Header */}
       <div className="bg-white border-b border-stone-200/80 py-3.5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-8 lg:px-12">
           <nav className="flex items-center gap-2 text-xs text-zinc-500">
             <Link href="/" className="hover:text-amber-800 transition-colors">
               Home
@@ -246,9 +246,9 @@ export default function AddProductPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+      <main className="w-full px-4 sm:px-8 lg:px-12 py-10 flex-1">
         {/* Page Hero Header */}
-        <div className="max-w-3xl mb-8">
+        <div className="w-full mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 text-amber-900 text-xs font-semibold uppercase tracking-wider mb-3 border border-amber-200/70">
             <Sparkles className="w-3.5 h-3.5 text-amber-700" />
             <span>Artisan Storefront Onboarding</span>
@@ -380,7 +380,7 @@ export default function AddProductPage() {
 
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-zinc-700">
-                      Craft Story & Description *
+                      Craft Story & Description <span className="text-rose-500 font-bold ml-0.5">*</span>
                     </label>
                     <textarea
                       name="description"
