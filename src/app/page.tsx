@@ -28,7 +28,8 @@ import {
   Shirt,
   Gem,
   Home,
-  Palette
+  Palette,
+  ShoppingBag
 } from 'lucide-react';
 import { apiClient, API_ENDPOINTS } from '@/lib/api';
 
@@ -95,7 +96,20 @@ const CATEGORY_CONFIG = [
 ];
 
 export default function RequirementPortal() {
-  const [activeTab, setActiveTab] = useState<'submit' | 'track'>('submit');
+  const [activeTab, setActiveTab] = useState<'products' | 'submit' | 'track'>('products');
+
+  // CATALOG PRODUCTS STATE (ADMIN-ADDED PRODUCTS)
+  const [catalogProducts, setCatalogProducts] = useState<any[]>([]);
+  const [isLoadingCatalog, setIsLoadingCatalog] = useState<boolean>(true);
+  const [selectedProductForInquiry, setSelectedProductForInquiry] = useState<any | null>(null);
+  const [inquireCustomerEmail, setInquireCustomerEmail] = useState<string>('');
+  const [inquireCustomerPhone, setInquireCustomerPhone] = useState<string>('');
+  const [inquireCustomerMessage, setInquireCustomerMessage] = useState<string>('');
+  const [isSubmittingProductInquiry, setIsSubmittingProductInquiry] = useState<boolean>(false);
+  const [inquireOtpSent, setInquireOtpSent] = useState<boolean>(false);
+  const [inquireOtp, setInquireOtp] = useState<string>('');
+  const [inquireDevOtp, setInquireDevOtp] = useState<string | null>(null);
+  const [isSendingInquireOtp, setIsSendingInquireOtp] = useState<boolean>(false);
 
   // SUBMIT FORM STATE - GENERAL
   const [category, setCategory] = useState<CategoryType>('fashion');
@@ -504,6 +518,117 @@ export default function RequirementPortal() {
     }
   };
 
+  // CATALOG PRODUCTS FETCHING & DIRECT PRODUCT INQUIRY (ACTIVE ONLY)
+  const fetchCatalogProducts = async () => {
+    setIsLoadingCatalog(true);
+    try {
+      const res = await apiClient.get(API_ENDPOINTS.PRODUCTS.LIST + '?limit=50&approvalStatus=approved');
+      if (res.data?.data) {
+        const activeOnly = res.data.data.filter((p: any) =>
+          p.approvalStatus === 'approved' && p.status !== 'inactive'
+        );
+        setCatalogProducts(activeOnly);
+      }
+    } catch (_) { }
+    finally {
+      setIsLoadingCatalog(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCatalogProducts();
+  }, []);
+
+  const handleOpenProductInquiry = (product: any) => {
+    setSelectedProductForInquiry(product);
+    // Explicitly reset email so it is NOT auto-filled (as requested)
+    setInquireCustomerEmail('');
+    setInquireCustomerPhone('');
+    setInquireOtpSent(false);
+    setInquireOtp('');
+    setInquireDevOtp(null);
+    setInquireCustomerMessage(`I am interested in ${product.title || product.name} (Price: ₹${product.price}). Please send further details.`);
+  };
+
+  const handleSendInquireOtp = async () => {
+    if (!inquireCustomerEmail || !inquireCustomerEmail.includes('@')) {
+      showToast('error', 'Please enter a valid email address');
+      return;
+    }
+
+    setIsSendingInquireOtp(true);
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.SEND_OTP, {
+        email: inquireCustomerEmail.trim().toLowerCase(),
+        purpose: 'inquiry_submit'
+      });
+
+      setInquireOtpSent(true);
+      const code = res.data?.data?.devOtp;
+      if (code) {
+        setInquireDevOtp(code);
+        setInquireOtp(code);
+      }
+      showToast('success', `Verification OTP sent to ${inquireCustomerEmail}!`);
+    } catch (err: any) {
+      showToast('error', err.response?.data?.message || 'Failed to send verification OTP');
+    } finally {
+      setIsSendingInquireOtp(false);
+    }
+  };
+
+  const handleSubmitProductInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedProductForInquiry) return;
+    if (!inquireCustomerEmail || !inquireCustomerEmail.includes('@')) {
+      showToast('error', 'Please enter a valid email address');
+      return;
+    }
+    if (!inquireOtp.trim()) {
+      showToast('error', 'Please enter the 6-digit verification OTP');
+      return;
+    }
+
+    setIsSubmittingProductInquiry(true);
+    try {
+      const pName = selectedProductForInquiry.title || selectedProductForInquiry.name;
+      const pPrice = selectedProductForInquiry.price;
+      const pImg = selectedProductForInquiry.images?.[0] || selectedProductForInquiry.imageUrl || '';
+      const payload = {
+        name: pName,
+        category: selectedProductForInquiry.category || 'other',
+        size: `Catalog Price: ₹${pPrice}`,
+        quantity: 1,
+        description: inquireCustomerMessage.trim() || `Inquiry for ${pName} (₹${pPrice})`,
+        email: inquireCustomerEmail.trim().toLowerCase(),
+        phone: inquireCustomerPhone.trim(),
+        images: pImg ? [pImg] : [],
+        isDirectProductInquiry: true,
+        price: pPrice,
+        otp: inquireOtp.trim()
+      };
+
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.CREATE, payload);
+      const created = res.data?.data;
+
+      showToast('success', `Inquiry for "${pName}" submitted successfully!`);
+      setSelectedProductForInquiry(null);
+
+      // Immediately switch to track inquiries tab and display this product inquiry
+      const cleanEmail = inquireCustomerEmail.trim().toLowerCase();
+      setTrackEmail(cleanEmail);
+      setIsTrackVerified(true);
+      if (created) {
+        setMyInquiries((prev) => [created, ...prev.filter(item => item.inquiryNumber !== created.inquiryNumber)]);
+      }
+      setActiveTab('track');
+    } catch (err: any) {
+      showToast('error', err?.response?.data?.message || 'Failed to submit inquiry');
+    } finally {
+      setIsSubmittingProductInquiry(false);
+    }
+  };
+
   const getStatusBadge = (status: CustomerInquiry['status']) => {
     switch (status) {
       case 'pending':
@@ -619,33 +744,171 @@ export default function RequirementPortal() {
         </p>
 
         {/* HIGH-CONTRAST TABS */}
-        <div className="mt-8 inline-flex p-1.5 bg-zinc-200/80 rounded-2xl shadow-inner border border-zinc-300/80">
+        <div className="mt-8 inline-flex p-1.5 bg-zinc-200/80 rounded-2xl shadow-inner border border-zinc-300/80 gap-1 flex-wrap justify-center">
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'products'
+                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+                : 'text-zinc-600 hover:text-zinc-900'
+              }`}
+          >
+            <ShoppingBag className="w-4 h-4 text-emerald-600" />
+            <span>Artisan Products ({catalogProducts.length})</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('submit')}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'submit'
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'submit'
                 ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
                 : 'text-zinc-600 hover:text-zinc-900'
               }`}
           >
             <FilePlus className="w-4 h-4 text-amber-600" />
-            <span>Submit Requirement</span>
+            <span>Submit Custom Requirement</span>
           </button>
 
           <button
             onClick={() => setActiveTab('track')}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'track'
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'track'
                 ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
                 : 'text-zinc-600 hover:text-zinc-900'
               }`}
           >
             <Search className="w-4 h-4 text-indigo-600" />
-            <span>Track Inquiry Status</span>
+            <span>Track Inquiries & Messages</span>
           </button>
         </div>
       </section>
 
       {/* 3. MAIN WORKFLOW CONTAINER */}
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 pb-16">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 pb-16">
+        {/* ======================================================== */}
+        {/* TAB 0: ARTISAN PRODUCTS CATALOG (ADMIN ADDED PRODUCTS)   */}
+        {/* ======================================================== */}
+        {activeTab === 'products' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xl shadow-zinc-200/50 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
+                    <ShoppingBag className="w-5 h-5 text-emerald-600" />
+                    <span>Artisan Products Catalog</span>
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Explore direct artisan products created by Amba Lifestyle. Click &quot;Inquire Now&quot; to send an inquiry directly to the Admin.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-zinc-500 bg-zinc-100 px-3 py-1 rounded-xl">
+                    {catalogProducts.length} Product{catalogProducts.length !== 1 ? 's' : ''} Live
+                  </span>
+                  <button
+                    onClick={fetchCatalogProducts}
+                    className="p-1.5 text-zinc-400 hover:text-indigo-600 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                    title="Refresh Products"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isLoadingCatalog ? 'animate-spin text-indigo-600' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {isLoadingCatalog ? (
+                <div className="py-16 text-center space-y-3">
+                  <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
+                  <p className="text-xs text-zinc-400 font-medium">Loading artisan catalog products...</p>
+                </div>
+              ) : catalogProducts.length === 0 ? (
+                <div className="py-16 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-2xl bg-zinc-100 text-zinc-400 flex items-center justify-center mx-auto">
+                    <ShoppingBag className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-base font-bold text-zinc-900">No Products in Catalog Yet</h3>
+                  <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+                    Products added by the admin will appear here instantly.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('submit')}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    <FilePlus className="w-4 h-4" />
+                    <span>Submit a Custom Requirement</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {catalogProducts.map((p) => {
+                    const img = p.images?.[0] || p.imageUrl || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
+                    const title = p.title || p.name || 'Artisan Product';
+                    const price = p.price || 0;
+                    const cat = p.category || 'Handcrafted';
+
+                    return (
+                      <div
+                        key={p._id || p.id}
+                        className="bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group"
+                      >
+                        <div>
+                          {/* Image Thumbnail */}
+                          <div className="relative aspect-square bg-zinc-100 overflow-hidden">
+                            <img
+                              src={img}
+                              alt={title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <button
+                              onClick={() => setPreviewImageModal(img)}
+                              className="absolute top-2.5 right-2.5 p-1.5 bg-black/60 text-white rounded-lg hover:bg-black transition-colors cursor-pointer"
+                              title="Enlarge Photo"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="absolute bottom-2.5 left-2.5 text-[10px] font-bold bg-white/95 text-zinc-800 px-2.5 py-0.5 rounded-md shadow-xs">
+                              {cat}
+                            </span>
+                          </div>
+
+                          {/* Details */}
+                          <div className="p-4 space-y-1.5">
+                            <h4 className="text-sm font-bold text-zinc-900 line-clamp-2 leading-snug">
+                              {title}
+                            </h4>
+                            <p className="text-base font-black text-emerald-700">
+                              ₹{price.toLocaleString()} <span className="text-[11px] font-normal text-zinc-500">INR</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="p-4 pt-0 space-y-2">
+                          <button
+                            onClick={() => handleOpenProductInquiry(p)}
+                            className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                            <span>Inquire Now</span>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setProductName(title);
+                              if (img) setImages([img]);
+                              setDescription(`Customizing specs based on product: ${title} (Catalog Price: ₹${price})`);
+                              setActiveTab('submit');
+                              showToast('info', `Loaded "${title}" into Custom Requirement form`);
+                            }}
+                            className="w-full py-1.5 text-[11px] font-bold text-zinc-600 hover:text-amber-800 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer text-center"
+                          >
+                            Customize in Studio →
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ======================================================== */}
         {/* TAB 1: SUBMIT REQUIREMENT FORM */}
         {/* ======================================================== */}
@@ -1737,6 +2000,189 @@ export default function RequirementPortal() {
           </p>
         </div>
       </footer>
+
+      {/* MODAL: DIRECT PRODUCT INQUIRY DIALOG */}
+      {selectedProductForInquiry && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fadeIn"
+          onClick={() => setSelectedProductForInquiry(null)}
+        >
+          <div
+            className="relative max-w-md w-full bg-white rounded-3xl p-6 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+              <h3 className="text-base font-bold text-zinc-900 flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-amber-600" />
+                <span>Product Inquiry</span>
+              </h3>
+              <button
+                onClick={() => setSelectedProductForInquiry(null)}
+                className="p-1 text-zinc-400 hover:text-zinc-700 rounded-lg cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Selected Product Card Summary */}
+            <div className="p-3 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-center gap-3.5">
+              <img
+                src={selectedProductForInquiry.images?.[0] || selectedProductForInquiry.imageUrl || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80'}
+                alt={selectedProductForInquiry.title || selectedProductForInquiry.name}
+                className="w-16 h-16 rounded-xl object-cover border border-zinc-200 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h4 className="text-xs font-bold text-zinc-900 truncate">
+                  {selectedProductForInquiry.title || selectedProductForInquiry.name}
+                </h4>
+                <p className="text-sm font-black text-emerald-700 mt-0.5">
+                  ₹{Number(selectedProductForInquiry.price).toLocaleString()} <span className="text-[10px] text-zinc-500 font-normal">INR</span>
+                </p>
+                <span className="text-[10px] font-semibold text-zinc-500">
+                  Category: {selectedProductForInquiry.category || 'Handcrafted'}
+                </span>
+              </div>
+            </div>
+
+            {/* Inquire Form */}
+            <form onSubmit={handleSubmitProductInquiry} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-1.5">
+                  Your Email Address <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="e.g. client@example.com"
+                    value={inquireCustomerEmail}
+                    onChange={(e) => {
+                      setInquireCustomerEmail(e.target.value);
+                      if (inquireOtpSent) setInquireOtpSent(false);
+                    }}
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-1.5">
+                  Contact Phone (Optional)
+                </label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="tel"
+                    placeholder="e.g. +91 98765 43210"
+                    value={inquireCustomerPhone}
+                    onChange={(e) => setInquireCustomerPhone(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-1.5">
+                  Inquiry Note / Custom Request
+                </label>
+                <textarea
+                  rows={2}
+                  value={inquireCustomerMessage}
+                  onChange={(e) => setInquireCustomerMessage(e.target.value)}
+                  placeholder="Ask about availability, delivery time, or custom variations..."
+                  className="w-full p-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                />
+              </div>
+
+              {/* OTP FLOW (MATCHES TRACK INQUIRIES) */}
+              {!inquireOtpSent ? (
+                <div className="pt-2 space-y-2">
+                  <div className="flex items-center justify-end gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProductForInquiry(null)}
+                      className="px-4 py-2.5 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendInquireOtp}
+                      disabled={isSendingInquireOtp || !inquireCustomerEmail || !inquireCustomerEmail.includes('@')}
+                      className="px-5 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSendingInquireOtp ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Send className="w-3.5 h-3.5" />
+                      )}
+                      <span>Send Verification Code</span>
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 text-right">
+                    A 6-digit OTP code will be sent to your email to verify before submitting.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-3 animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-indigo-900">
+                      Enter OTP Code sent to {inquireCustomerEmail}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleSendInquireOtp}
+                      className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                    >
+                      Resend Code
+                    </button>
+                  </div>
+
+                  <input
+                    type="text"
+                    maxLength={6}
+                    placeholder="Enter 6-digit code"
+                    value={inquireOtp}
+                    onChange={(e) => setInquireOtp(e.target.value)}
+                    className="w-full py-2.5 px-4 text-center tracking-widest text-base font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  />
+
+                  {inquireDevOtp && (
+                    <div className="p-2 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
+                      <span className="text-xs font-semibold text-amber-900">
+                        Demo Code: <strong className="font-mono text-xs tracking-wider bg-amber-200 px-1.5 py-0.5 rounded">{inquireDevOtp}</strong> (Auto-filled)
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProductForInquiry(null)}
+                      className="px-4 py-2.5 text-xs font-bold text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingProductInquiry || !inquireOtp}
+                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSubmittingProductInquiry ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      )}
+                      <span>Verify & Submit Inquiry</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* MODAL: IMAGE PREVIEW */}
       {previewImageModal && (
