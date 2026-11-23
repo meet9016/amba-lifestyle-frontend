@@ -29,7 +29,8 @@ import {
   Gem,
   Home,
   Palette,
-  ShoppingBag
+  ShoppingBag,
+  ImageOff
 } from 'lucide-react';
 import { apiClient, API_ENDPOINTS } from '@/lib/api';
 
@@ -893,7 +894,13 @@ export default function RequirementPortal() {
                           <button
                             onClick={() => {
                               setProductName(title);
-                              if (img) setImages([img]);
+                              if (p.images && p.images.length > 0) {
+                                setImages([p.images[0]]);
+                              } else if (p.imageUrl) {
+                                setImages([p.imageUrl]);
+                              } else {
+                                setImages([]);
+                              }
                               setDescription(`Customizing specs based on product: ${title} (Catalog Price: ₹${price})`);
                               setActiveTab('submit');
                               showToast('info', `Loaded "${title}" into Custom Requirement form`);
@@ -1732,8 +1739,9 @@ export default function RequirementPortal() {
                   </div>
                 ) : (
                   myInquiries.map((inq) => {
-                    const primaryImage = inq.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80';
-                    const allImages = inq.images && inq.images.length > 0 ? inq.images : [primaryImage];
+                    const hasImages = Boolean(Array.isArray(inq.images) && inq.images.length > 0 && inq.images[0]);
+                    const primaryImage = hasImages ? inq.images![0] : '';
+                    const allImages = hasImages ? inq.images! : [];
 
                     return (
                       <div
@@ -1757,19 +1765,26 @@ export default function RequirementPortal() {
                         <div className="p-6 space-y-5">
                           <div className="flex flex-col sm:flex-row gap-5">
                             <div className="shrink-0 space-y-2">
-                              <div
-                                onClick={() => setPreviewImageModal(primaryImage)}
-                                className="w-28 h-28 rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden cursor-pointer relative group shadow-sm"
-                              >
-                                <img
-                                  src={primaryImage}
-                                  alt={inq.name}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                  <Eye className="w-5 h-5 text-white" />
+                              {hasImages ? (
+                                <div
+                                  onClick={() => setPreviewImageModal(primaryImage)}
+                                  className="w-28 h-28 rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden cursor-pointer relative group shadow-sm"
+                                >
+                                  <img
+                                    src={primaryImage}
+                                    alt={inq.name}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                  />
+                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                    <Eye className="w-5 h-5 text-white" />
+                                  </div>
                                 </div>
-                              </div>
+                              ) : (
+                                <div className="w-28 h-28 rounded-2xl bg-zinc-50 border border-dashed border-zinc-300 flex flex-col items-center justify-center text-zinc-400 p-2 text-center">
+                                  <ImageOff className="w-6 h-6 text-zinc-300 mb-1" />
+                                  <span className="text-[10px] font-semibold text-zinc-400">No Photo</span>
+                                </div>
+                              )}
 
                               {allImages.length > 1 && (
                                 <div className="flex items-center gap-1.5 max-w-[120px] overflow-x-auto pb-1">
