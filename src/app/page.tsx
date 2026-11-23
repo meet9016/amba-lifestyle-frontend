@@ -1,518 +1,1549 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import { apiClient, API_ENDPOINTS } from '@/lib/api';
 import {
-  Camera,
-  Star,
-  ChevronRight,
-  ArrowUp,
+  FilePlus,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
   Sparkles,
+  ArrowRight,
   ShieldCheck,
-  Flame,
-  ShoppingBag,
-  ExternalLink,
+  Upload,
+  Image as ImageIcon,
+  Mail,
+  Phone,
+  RefreshCw,
+  Eye,
+  X,
   Layers,
-  Heart,
-  Package,
-  Store,
-  RefreshCw
+  ExternalLink,
+  ChevronRight,
+  Send,
+  Lock,
+  DollarSign,
+  MessageSquare,
+  Plus,
+  Shirt,
+  Gem,
+  Home,
+  Palette
 } from 'lucide-react';
+import { apiClient, API_ENDPOINTS } from '@/lib/api';
 
-interface AlibabaProduct {
-  id: string;
-  title: string;
-  category: string;
-  subCategory?: string;
-  price: string;
-  minOrder: string;
-  imageUrl: string;
-  rating?: number;
-  ordersCount?: string;
-  verified?: boolean;
-}
+type CategoryType = 'fashion' | 'jewelry' | 'home_decor' | 'other';
 
-interface CategoryItem {
+interface CustomerInquiry {
   _id: string;
+  inquiryNumber: string;
+  email: string;
   name: string;
-  slug?: string;
+  category?: CategoryType;
+  size: string;
+  specifications?: Record<string, any>;
+  quantity: number;
   description?: string;
-  image?: string;
-  icon?: string;
-  subcategoriesCount?: number;
+  phone?: string;
+  images?: string[];
+  status: 'pending' | 'in_review' | 'quoted' | 'approved' | 'rejected';
+  quotedPrice?: number;
+  adminNotes?: string;
+  timeline?: Array<{
+    status: string;
+    note: string;
+    updatedAt: string;
+  }>;
+  createdAt: string;
 }
 
-interface SubcategoryItem {
-  _id: string;
-  name: string;
-  slug?: string;
-  categoryId?: string;
-  categoryName?: string;
-  image?: string;
-  description?: string;
-}
+const CATEGORY_CONFIG = [
+  {
+    id: 'fashion' as CategoryType,
+    label: 'Fashion & Apparel',
+    icon: Shirt,
+    desc: 'Sarees, Kurtis, Lehengas, Ethnic Wear, Handloom Fabrics'
+  },
+  {
+    id: 'jewelry' as CategoryType,
+    label: 'Jewelry & Silverware',
+    icon: Gem,
+    desc: '92.5 Sterling Silver, Kundan, Polki, Bangles, Utensils'
+  },
+  {
+    id: 'home_decor' as CategoryType,
+    label: 'Home Decor & Crafts',
+    icon: Home,
+    desc: 'Brass Urli, Hand-carved Wood, Blue Pottery, Marble'
+  },
+  {
+    id: 'other' as CategoryType,
+    label: 'Other Custom Craft',
+    icon: Palette,
+    desc: 'Handmade paper, leather goods, specialized artisan gifts'
+  }
+];
 
-const getCategoryIcon = (name: string): string => {
-  const lower = name.toLowerCase();
-  if (lower.includes('jewel') || lower.includes('silver')) return '💎';
-  if (lower.includes('ethnic') || lower.includes('wear') || lower.includes('apparel')) return '👗';
-  if (lower.includes('men')) return '👕';
-  if (lower.includes('pottery') || lower.includes('craft')) return '🏺';
-  if (lower.includes('home') || lower.includes('decor')) return '🏠';
-  if (lower.includes('living') || lower.includes('rug')) return '🛋️';
-  if (lower.includes('electr')) return '💻';
-  return '✨';
-};
+export default function RequirementPortal() {
+  const [activeTab, setActiveTab] = useState<'submit' | 'track'>('submit');
 
-const getSubcategoryImage = (sub: SubcategoryItem): string => {
-  if (sub.image && sub.image.startsWith('http')) return sub.image;
-  const lower = (sub.name + ' ' + (sub.categoryName || '')).toLowerCase();
-  if (lower.includes('saree') || lower.includes('handloom')) return 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('kundan') || lower.includes('necklace') || lower.includes('jewel')) return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('bangle') || lower.includes('silver')) return 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('lehenga') || lower.includes('kurti')) return 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('kurta') || lower.includes('men')) return 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('pottery') || lower.includes('ceramic')) return 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('rug') || lower.includes('carpet')) return 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=300&q=80';
-  if (lower.includes('metal') || lower.includes('brass')) return 'https://images.unsplash.com/photo-1582738411706-bfc8e691d1c2?auto=format&fit=crop&w=300&q=80';
-  return 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=300&q=80';
-};
+  // SUBMIT FORM STATE - GENERAL
+  const [category, setCategory] = useState<CategoryType>('fashion');
+  const [productName, setProductName] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [description, setDescription] = useState<string>('');
+  const [images, setImages] = useState<string[]>([]);
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [userPhone, setUserPhone] = useState<string>('');
 
-export default function Home() {
-  const [liveProducts, setLiveProducts] = useState<AlibabaProduct[]>([]);
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [subcategories, setSubcategories] = useState<SubcategoryItem[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [activeSubcategory, setActiveSubcategory] = useState<string>('All');
-  const [searchFilter, setSearchFilter] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // FASHION SPECIFIC FIELDS
+  const [fashionGender, setFashionGender] = useState<string>("Women's Wear");
+  const [fashionSize, setFashionSize] = useState<string>('M (38)');
+  const [fashionFabric, setFashionFabric] = useState<string>('Pure Handloom Silk');
+  const [fashionColorWork, setFashionColorWork] = useState<string>('');
+  const [fashionCustomMeasurements, setFashionCustomMeasurements] = useState<string>('');
 
-  // Fetch approved live products, categories and subcategories from backend MongoDB
-  const fetchAllData = async () => {
-    setIsLoading(true);
+  // JEWELRY SPECIFIC FIELDS
+  const [jewelryType, setJewelryType] = useState<string>('Necklace & Choker');
+  const [metalPurity, setMetalPurity] = useState<string>('92.5 Sterling Silver');
+  const [gemstoneType, setGemstoneType] = useState<string>('Kundan & Polki');
+  const [jewelrySize, setJewelrySize] = useState<string>('Standard (16"-18")');
+  const [estimatedWeight, setEstimatedWeight] = useState<string>('');
+
+  // HOME DECOR SPECIFIC FIELDS
+  const [craftMedium, setCraftMedium] = useState<string>('Solid Brass & Bronze');
+  const [decorDimensions, setDecorDimensions] = useState<string>('');
+  const [decorFinish, setDecorFinish] = useState<string>('Antique Polish with Lacquer');
+
+  // OTHER CRAFT FIELDS
+  const [otherSizeSpec, setOtherSizeSpec] = useState<string>('');
+
+  // SUBMIT OTP FLOW
+  const [submitOtpSent, setSubmitOtpSent] = useState<boolean>(false);
+  const [submitOtp, setSubmitOtp] = useState<string>('');
+  const [submitDevOtp, setSubmitDevOtp] = useState<string | null>(null);
+  const [isSendingSubmitOtp, setIsSendingSubmitOtp] = useState<boolean>(false);
+  const [isSubmittingInquiry, setIsSubmittingInquiry] = useState<boolean>(false);
+  const [submittedInquiry, setSubmittedInquiry] = useState<CustomerInquiry | null>(null);
+
+  // TRACK STATUS FLOW
+  const [trackEmail, setTrackEmail] = useState<string>('');
+  const [trackOtpSent, setTrackOtpSent] = useState<boolean>(false);
+  const [trackOtp, setTrackOtp] = useState<string>('');
+  const [trackDevOtp, setTrackDevOtp] = useState<string | null>(null);
+  const [isSendingTrackOtp, setIsSendingTrackOtp] = useState<boolean>(false);
+  const [isVerifyingTrack, setIsVerifyingTrack] = useState<boolean>(false);
+  const [isTrackVerified, setIsTrackVerified] = useState<boolean>(false);
+  const [myInquiries, setMyInquiries] = useState<CustomerInquiry[]>([]);
+
+  // NOTIFICATION & IMAGE PREVIEW
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [previewImageModal, setPreviewImageModal] = useState<string | null>(null);
+
+  const showToast = (type: 'success' | 'error' | 'info', message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 6000);
+  };
+
+  // Helper to compute effective primary size string based on chosen category
+  const getComputedSizeString = (): string => {
+    if (category === 'fashion') {
+      const base = `${fashionGender} - ${fashionSize} (${fashionFabric})`;
+      return fashionCustomMeasurements ? `${base} [${fashionCustomMeasurements}]` : base;
+    }
+    if (category === 'jewelry') {
+      const wt = estimatedWeight ? `, ${estimatedWeight}` : '';
+      return `${jewelryType} (${jewelrySize}) - ${metalPurity}${wt}`;
+    }
+    if (category === 'home_decor') {
+      return `${decorDimensions} [${craftMedium}, ${decorFinish}]`;
+    }
+    return otherSizeSpec || 'Custom Specifications';
+  };
+
+  // Helper to compile structured specifications object
+  const getComputedSpecifications = () => {
+    if (category === 'fashion') {
+      return {
+        gender: fashionGender,
+        apparelSize: fashionSize,
+        fabric: fashionFabric,
+        colorAndWork: fashionColorWork,
+        customMeasurements: fashionCustomMeasurements
+      };
+    }
+    if (category === 'jewelry') {
+      return {
+        jewelryType,
+        metalPurity,
+        gemstoneType,
+        jewelrySize,
+        estimatedWeight
+      };
+    }
+    if (category === 'home_decor') {
+      return {
+        craftMedium,
+        dimensions: decorDimensions,
+        finish: decorFinish
+      };
+    }
+    return {
+      specifications: otherSizeSpec
+    };
+  };
+
+  // Handle multiple local image files upload & convert to Base64
+  const handleMultipleImageFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const fileList = Array.from(files);
+    let loadedCount = 0;
+    const newImageUrls: string[] = [];
+
+    fileList.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('error', `"${file.name}" is too large. Max 10MB per image.`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          newImageUrls.push(reader.result);
+        }
+        loadedCount++;
+        if (loadedCount === fileList.length) {
+          setImages((prev) => [...prev, ...newImageUrls]);
+          showToast('success', `Added ${newImageUrls.length} photo(s) successfully!`);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    e.target.value = '';
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  // CLEAR / RESET SUBMISSION FORM INPUT DATA
+  const resetSubmitForm = () => {
+    setCategory('fashion');
+    setProductName('');
+    setQuantity(1);
+    setDescription('');
+    setImages([]);
+    setUserEmail('');
+    setUserPhone('');
+
+    // Fashion
+    setFashionGender("Women's Wear");
+    setFashionSize('M (38)');
+    setFashionFabric('Pure Handloom Silk');
+    setFashionColorWork('');
+    setFashionCustomMeasurements('');
+
+    // Jewelry
+    setJewelryType('Necklace & Choker');
+    setMetalPurity('92.5 Sterling Silver');
+    setGemstoneType('Kundan & Polki');
+    setJewelrySize('Standard (16"-18")');
+    setEstimatedWeight('');
+
+    // Home Decor
+    setCraftMedium('Solid Brass & Bronze');
+    setDecorDimensions('');
+    setDecorFinish('Antique Polish with Lacquer');
+
+    // Other Craft
+    setOtherSizeSpec('');
+
+    // Submit OTP State
+    setSubmitOtpSent(false);
+    setSubmitOtp('');
+    setSubmitDevOtp(null);
+  };
+
+  // SEND OTP FOR SUBMIT
+  const handleSendSubmitOtp = async () => {
+    if (!userEmail || !userEmail.includes('@')) {
+      showToast('error', 'Please enter a valid email address');
+      return;
+    }
+
+    if (!productName.trim()) {
+      showToast('error', 'Please enter the Requirement / Product Name first');
+      return;
+    }
+
+    setIsSendingSubmitOtp(true);
     try {
-      if (typeof window !== 'undefined') {
-        const params = new URLSearchParams(window.location.search);
-        const catParam = params.get('category');
-        const subParam = params.get('subcategory');
-        const qParam = params.get('search');
-        if (catParam) setActiveCategory(catParam);
-        if (subParam) setActiveSubcategory(subParam);
-        if (qParam) setSearchFilter(qParam);
-      }
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.SEND_OTP, {
+        email: userEmail.trim(),
+        purpose: 'inquiry_submit'
+      });
 
-      const [prodRes, catsRes, subsRes] = await Promise.all([
-        apiClient.get(API_ENDPOINTS.PRODUCTS.APPROVED),
-        apiClient.get(API_ENDPOINTS.CATEGORIES.LIST),
-        apiClient.get(API_ENDPOINTS.SUBCATEGORIES.LIST)
-      ]);
-
-      if (prodRes.data?.data && Array.isArray(prodRes.data.data)) {
-        const mapped: AlibabaProduct[] = prodRes.data.data.map((item: any) => ({
-          id: String(item._id),
-          title: item.title,
-          category: item.category || 'Handcrafted',
-          subCategory: item.subCategory || '',
-          price: `₹${Number(item.price).toLocaleString('en-IN')}.00`,
-          minOrder: 'Min. order: 1 piece',
-          imageUrl:
-            item.images?.[0] ||
-            'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=500&q=80',
-          rating: item.rating || 5.0,
-          ordersCount: item.vendorName || 'Artisan Verified',
-          verified: true
-        }));
-        setLiveProducts(mapped);
-      } else {
-        setLiveProducts([]);
+      setSubmitOtpSent(true);
+      const code = res.data?.data?.devOtp;
+      if (code) {
+        setSubmitDevOtp(code);
+        setSubmitOtp(code);
       }
-
-      if (catsRes.data?.data && Array.isArray(catsRes.data.data)) {
-        setCategories(catsRes.data.data);
-      }
-      if (subsRes.data?.data && Array.isArray(subsRes.data.data)) {
-        setSubcategories(subsRes.data.data);
-      }
-    } catch (_) {
-      setLiveProducts([]);
+      showToast('success', `Verification OTP sent to ${userEmail}!`);
+    } catch (err: any) {
+      showToast('error', err.response?.data?.message || 'Failed to send verification OTP');
     } finally {
-      setIsLoading(false);
+      setIsSendingSubmitOtp(false);
     }
   };
 
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  // SUBMIT INQUIRY WITH OTP
+  const handleSubmitRequirement = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  // Filter products by selected Category, Subcategory, or Search
-  const displayedFeed = liveProducts.filter((p) => {
-    const matchCat =
-      activeCategory === 'All' ||
-      p.category.toLowerCase().includes(activeCategory.toLowerCase());
-    const matchSub =
-      activeSubcategory === 'All' ||
-      (p.subCategory && p.subCategory.toLowerCase().includes(activeSubcategory.toLowerCase()));
-    const matchSearch =
-      !searchFilter ||
-      p.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      (p.subCategory && p.subCategory.toLowerCase().includes(searchFilter.toLowerCase()));
-    return matchCat && matchSub && matchSearch;
-  });
+    if (!productName.trim() || !userEmail.trim()) {
+      showToast('error', 'Product Name and Email are required');
+      return;
+    }
 
-  // Dynamic promo subcategories
-  const promoSubcategories = subcategories.slice(0, 3);
+    if (!submitOtp.trim()) {
+      showToast('error', 'Please enter the 6-digit OTP sent to your email');
+      return;
+    }
 
-  // Dynamic top picks from subcategories or products
-  const topPicks = subcategories.slice(0, 6);
+    const computedSize = getComputedSizeString();
+    const computedSpecs = getComputedSpecifications();
+
+    setIsSubmittingInquiry(true);
+    try {
+      const payload = {
+        name: productName.trim(),
+        category,
+        size: computedSize,
+        specifications: computedSpecs,
+        quantity: Number(quantity) || 1,
+        description: description.trim(),
+        email: userEmail.trim().toLowerCase(),
+        phone: userPhone.trim(),
+        images: images,
+        otp: submitOtp.trim()
+      };
+
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.CREATE, payload);
+      const created = res.data?.data;
+      setSubmittedInquiry(created);
+      showToast('success', `Requirement submitted successfully! Reference: #${created.inquiryNumber}`);
+
+      // Clear all input data after successful submission
+      resetSubmitForm();
+    } catch (err: any) {
+      showToast('error', err.response?.data?.message || 'Submission failed. Please check OTP and try again.');
+    } finally {
+      setIsSubmittingInquiry(false);
+    }
+  };
+
+  // SEND OTP FOR TRACKING
+  const handleSendTrackOtp = async () => {
+    if (!trackEmail || !trackEmail.includes('@')) {
+      showToast('error', 'Please enter a valid email address');
+      return;
+    }
+
+    setIsSendingTrackOtp(true);
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.SEND_OTP, {
+        email: trackEmail.trim(),
+        purpose: 'inquiry_track'
+      });
+
+      setTrackOtpSent(true);
+      const code = res.data?.data?.devOtp;
+      if (code) {
+        setTrackDevOtp(code);
+        setTrackOtp(code);
+      }
+      showToast('success', `Verification OTP sent to ${trackEmail}!`);
+    } catch (err: any) {
+      showToast('error', err.response?.data?.message || 'Failed to send tracking OTP');
+    } finally {
+      setIsSendingTrackOtp(false);
+    }
+  };
+
+  // FETCH MY INQUIRIES WITH OTP
+  const handleVerifyAndFetchInquiries = async () => {
+    if (!trackEmail.trim() || !trackOtp.trim()) {
+      showToast('error', 'Please enter your email and the 6-digit OTP');
+      return;
+    }
+
+    setIsVerifyingTrack(true);
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.MY_INQUIRIES, {
+        email: trackEmail.trim().toLowerCase(),
+        otp: trackOtp.trim()
+      });
+
+      const list = res.data?.data || [];
+      setMyInquiries(list);
+      setIsTrackVerified(true);
+      showToast('success', `Found ${list.length} inquiry record(s) for your email`);
+    } catch (err: any) {
+      showToast('error', err.response?.data?.message || 'Invalid or expired OTP. Please try again.');
+    } finally {
+      setIsVerifyingTrack(false);
+    }
+  };
+
+  const getStatusBadge = (status: CustomerInquiry['status']) => {
+    switch (status) {
+      case 'pending':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+            <Clock className="w-3.5 h-3.5 text-amber-600" /> Pending Admin Review
+          </span>
+        );
+      case 'in_review':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200">
+            <Sparkles className="w-3.5 h-3.5 text-sky-600" /> In Feasibility Review
+          </span>
+        );
+      case 'quoted':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200">
+            <DollarSign className="w-3.5 h-3.5 text-purple-600" /> Price Quoted
+          </span>
+        );
+      case 'approved':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Approved & In Production
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200">
+            <X className="w-3.5 h-3.5 text-rose-600" /> Cannot Fulfill
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-zinc-100 text-zinc-800">
+            {status}
+          </span>
+        );
+    }
+  };
+
+  const getCategoryBadge = (cat?: CategoryType) => {
+    switch (cat) {
+      case 'fashion':
+        return <span className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[11px] font-bold">👗 Fashion & Apparel</span>;
+      case 'jewelry':
+        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[11px] font-bold">💎 Jewelry & Silverware</span>;
+      case 'home_decor':
+        return <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-bold">🏺 Home Decor & Crafts</span>;
+      default:
+        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded text-[11px] font-bold">✨ Custom Craft</span>;
+    }
+  };
+
+  const currentCategoryConfig = CATEGORY_CONFIG.find((c) => c.id === category);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f4f4f4] text-zinc-900 font-sans">
-      <Navbar />
-
-      <main className="w-full px-3 sm:px-6 lg:px-10 py-3 sm:py-4 space-y-3 sm:space-y-4 flex-1">
-        {/* ========================================================= */}
-        {/* 1. HERO FEATURE ROW                                       */}
-        {/* ========================================================= */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-3 items-stretch">
-          
-          {/* Card 1: Left Categories Menu (Dynamic from Database) */}
-          <div className="md:col-span-3 bg-white rounded-2xl p-4 border border-zinc-200/80 shadow-2xs flex flex-col justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between pb-1 border-b border-zinc-100">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                  Live Categories
-                </span>
-                {activeCategory !== 'All' && (
-                  <button
-                    onClick={() => {
-                      setActiveCategory('All');
-                      setActiveSubcategory('All');
-                    }}
-                    className="text-[10px] text-[#ff6a00] font-bold hover:underline"
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
-
-              <div className="pt-1 space-y-0.5">
-                {categories.length > 0 ? (
-                  categories.map((c) => {
-                    const isSelected = activeCategory.toLowerCase() === c.name.toLowerCase();
-                    return (
-                      <button
-                        key={c._id}
-                        onClick={() => {
-                          setActiveCategory(isSelected ? 'All' : c.name);
-                          setActiveSubcategory('All');
-                        }}
-                        className={`w-full flex items-center justify-between py-2 px-2.5 rounded-xl text-left text-xs transition-colors cursor-pointer ${
-                          isSelected
-                            ? 'bg-orange-50 text-[#ff6a00] font-bold shadow-xs'
-                            : 'text-zinc-700 hover:bg-zinc-50 font-medium'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <span>{getCategoryIcon(c.name)}</span>
-                          <span className="truncate">{c.name}</span>
-                        </div>
-                        <ChevronRight className={`w-3.5 h-3.5 text-zinc-400 shrink-0 ${isSelected ? 'text-[#ff6a00]' : ''}`} />
-                      </button>
-                    );
-                  })
-                ) : (
-                  <div className="py-4 text-center text-xs text-zinc-400">
-                    No categories in database
-                  </div>
-                )}
-              </div>
+    <div className="min-h-screen bg-gradient-to-b from-stone-50 via-amber-50/20 to-zinc-50 text-zinc-900 flex flex-col font-sans">
+      {/* 1. TOP BRAND NAVIGATION BAR */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-700 via-amber-600 to-amber-500 flex items-center justify-center text-white font-serif font-black text-xl shadow-md shadow-amber-600/20">
+              A
             </div>
-
-            <div className="pt-2 border-t border-zinc-100 text-[11px] text-zinc-500 flex items-center justify-between">
-              <span>{categories.length} Verified Categories</span>
-              <a href="#feed" className="text-[#ff6a00] font-bold hover:underline">
-                View All &rarr;
-              </a>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-serif text-lg font-black tracking-tight text-zinc-900">
+                  AMBA LIFESTYLE
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
+                  Customer Portal
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-500 font-medium">Custom Craft & Manufacturing Requirements</p>
             </div>
           </div>
+        </div>
+      </header>
 
-          {/* Card 2, 3, 4: Middle 3 Dynamic Promo Squares */}
-          <div className="md:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {promoSubcategories.length > 0 ? (
-              promoSubcategories.map((sub, idx) => (
-                <div
-                  key={sub._id || idx}
-                  onClick={() => {
-                    if (sub.categoryName) setActiveCategory(sub.categoryName);
-                    setActiveSubcategory(sub.name);
-                  }}
-                  className="bg-white rounded-2xl p-3.5 border border-zinc-200/80 shadow-2xs flex flex-col justify-between hover:shadow-md transition-shadow group cursor-pointer"
-                >
-                  <div>
-                    <p className="text-xs font-bold text-zinc-900 leading-snug group-hover:text-[#ff6a00] transition-colors truncate">
-                      {sub.name}
-                    </p>
-                    <p className="text-[10px] text-zinc-400 mt-0.5 truncate">{sub.categoryName || 'Artisan Collection'}</p>
+      {/* TOAST ALERT */}
+      {toast && (
+        <div className="fixed top-20 right-6 z-50 animate-slideIn">
+          <div
+            className={`px-4 py-3 rounded-xl shadow-xl border flex items-center gap-3 text-sm font-medium ${toast.type === 'success'
+                ? 'bg-emerald-900 text-emerald-50 border-emerald-700 shadow-emerald-950/20'
+                : toast.type === 'error'
+                  ? 'bg-rose-900 text-rose-50 border-rose-700 shadow-rose-950/20'
+                  : 'bg-zinc-900 text-zinc-50 border-zinc-700'
+              }`}
+          >
+            {toast.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
+            {toast.type === 'error' && <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+            <span>{toast.message}</span>
+            <button onClick={() => setToast(null)} className="ml-2 text-zinc-400 hover:text-white cursor-pointer">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 2. HERO HEADER & TAB SWITCHER */}
+      <section className="pt-8 pb-6 px-4 max-w-4xl mx-auto text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold mb-3">
+          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          <span>Verified Artisan Sourcing & Direct Quotation</span>
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight font-serif">
+          Custom Requirement & Inquiry Desk
+        </h1>
+        <p className="text-sm text-zinc-600 max-w-xl mx-auto mt-2 leading-relaxed">
+          Select your category (Fashion, Jewelry, Home Decor), customize category-specific measurements, upload photos, and verify securely via Email OTP.
+        </p>
+
+        {/* HIGH-CONTRAST TABS */}
+        <div className="mt-8 inline-flex p-1.5 bg-zinc-200/80 rounded-2xl shadow-inner border border-zinc-300/80">
+          <button
+            onClick={() => setActiveTab('submit')}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'submit'
+                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+                : 'text-zinc-600 hover:text-zinc-900'
+              }`}
+          >
+            <FilePlus className="w-4 h-4 text-amber-600" />
+            <span>Submit Requirement</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('track')}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'track'
+                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+                : 'text-zinc-600 hover:text-zinc-900'
+              }`}
+          >
+            <Search className="w-4 h-4 text-indigo-600" />
+            <span>Track Inquiry Status</span>
+          </button>
+        </div>
+      </section>
+
+      {/* 3. MAIN WORKFLOW CONTAINER */}
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 pb-16">
+        {/* ======================================================== */}
+        {/* TAB 1: SUBMIT REQUIREMENT FORM */}
+        {/* ======================================================== */}
+        {activeTab === 'submit' && (
+          <div className="space-y-6">
+            {/* Success Card when just submitted */}
+            {submittedInquiry && (
+              <div className="p-6 bg-emerald-50 border-2 border-emerald-300 rounded-2xl shadow-lg text-emerald-950 animate-fadeIn">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-md">
+                    <CheckCircle2 className="w-7 h-7" />
                   </div>
-                  <div className="aspect-square rounded-xl overflow-hidden bg-zinc-50 mt-2">
-                    <img
-                      src={getSubcategoryImage(sub)}
-                      alt={sub.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold text-emerald-900">Requirement Submitted Successfully!</h3>
+                      <span className="font-mono text-xs font-black bg-emerald-200 text-emerald-900 px-3 py-1 rounded-full border border-emerald-300">
+                        {submittedInquiry.inquiryNumber}
+                      </span>
+                    </div>
+                    <p className="text-xs text-emerald-800 mt-1">
+                      Our artisans and product team have received your requirement. You can track updates anytime with your email <strong>{submittedInquiry.email}</strong>.
+                    </p>
+
+                    <div className="mt-4 p-3.5 bg-white/80 rounded-xl border border-emerald-200 text-xs space-y-1.5">
+                      <p><strong>Category:</strong> {getCategoryBadge(submittedInquiry.category)}</p>
+                      <p><strong>Item Name:</strong> {submittedInquiry.name}</p>
+                      <p><strong>Specifications / Size:</strong> {submittedInquiry.size}</p>
+                      <p><strong>Quantity:</strong> {submittedInquiry.quantity} unit(s)</p>
+                      <p><strong>Attached Photos:</strong> {submittedInquiry.images?.length || 0} photo(s)</p>
+                      <p><strong>Status:</strong> <span className="text-amber-700 font-bold">Pending Review</span></p>
+                    </div>
+
+                    <div className="mt-4 flex items-center gap-3">
+                      <button
+                        onClick={() => {
+                          setTrackEmail(submittedInquiry.email);
+                          setActiveTab('track');
+                          handleSendTrackOtp();
+                        }}
+                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Search className="w-3.5 h-3.5" />
+                        <span>Track Status of This Inquiry</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSubmittedInquiry(null);
+                          resetSubmitForm();
+                        }}
+                        className="px-4 py-2 bg-white text-emerald-800 border border-emerald-300 text-xs font-bold rounded-xl hover:bg-emerald-100 transition-all cursor-pointer"
+                      >
+                        Submit Another Requirement
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="sm:col-span-3 bg-white rounded-2xl p-6 border border-zinc-200/80 shadow-2xs flex flex-col items-center justify-center text-center">
-                <Package className="w-8 h-8 text-zinc-300 mb-2" />
-                <p className="text-xs font-bold text-zinc-700">Subcategories Live Sync</p>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Admin can manage categories and subcategories in Super Admin</p>
               </div>
             )}
-          </div>
 
-          {/* Card 5: Right Vibrant Orange Promo Box */}
-          <div className="md:col-span-3 bg-gradient-to-br from-[#ff6a00] via-[#ff5500] to-[#e64000] text-white rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full inline-block">
-                B2B Sourcing
-              </span>
-              <h3 className="text-lg font-black tracking-tight mt-1.5 leading-tight">
-                AUTHENTIC INDIAN ARTISAN GUILD
-              </h3>
-              <p className="text-xs text-orange-100 mt-1">
-                Direct wholesale manufacturing, sample reference custom production, and 3-tier inspection.
-              </p>
-            </div>
-
-            <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-white/10 my-2">
-              <img
-                src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80"
-                alt="Artisan Craft"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <Link
-              href="/register"
-              className="w-full py-2 bg-white hover:bg-orange-50 text-[#ff6a00] font-black text-xs text-center rounded-xl shadow-xs transition-colors"
-            >
-              REGISTER BUYER ACCOUNT
-            </Link>
-          </div>
-        </section>
-
-        {/* ========================================================= */}
-        {/* 2. HORIZONTAL ORANGE BANNER ("FOR BUYERS // TOP PICKS")   */}
-        {/* ========================================================= */}
-        {topPicks.length > 0 && (
-          <section className="bg-gradient-to-r from-[#ff5500] to-[#ff7700] rounded-2xl p-3 sm:p-4 text-white shadow-xs">
-            <div className="flex flex-col lg:flex-row items-center gap-4">
-              {/* Left title & button */}
-              <div className="flex items-center justify-between lg:flex-col lg:items-start gap-3 shrink-0 lg:w-48 w-full">
-                <div>
-                  <p className="text-[11px] font-mono font-bold tracking-widest text-orange-200 uppercase">
-                    FOR BUYERS //
-                  </p>
-                  <h3 className="text-base sm:text-lg font-black leading-tight">FEATURED CRAFTS</h3>
-                </div>
-                <a
-                  href="#feed"
-                  className="px-4 py-1.5 bg-white text-[#ff5500] font-bold text-xs rounded-full hover:bg-orange-50 transition-colors shadow-xs"
-                >
-                  Explore now
-                </a>
-              </div>
-
-              {/* Right: Dynamic Subcategory Cards */}
-              <div className="flex-1 grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2.5 w-full">
-                {topPicks.map((item, idx) => (
-                  <div
-                    key={item._id || idx}
-                    onClick={() => {
-                      if (item.categoryName) setActiveCategory(item.categoryName);
-                      setActiveSubcategory(item.name);
-                    }}
-                    className="bg-white rounded-xl p-2 text-zinc-900 text-center shadow-2xs hover:shadow-md transition-shadow cursor-pointer group"
-                  >
-                    <div className="aspect-square rounded-lg overflow-hidden bg-zinc-100 mb-1.5">
-                      <img
-                        src={getSubcategoryImage(item)}
-                        alt={item.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-                    <p className="text-xs font-bold text-zinc-900 truncate">{item.name}</p>
+            {/* Main Submission Form */}
+            <form onSubmit={handleSubmitRequirement} className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xl shadow-zinc-200/50 space-y-7">
+              {/* STEP 1: SELECT CATEGORY */}
+              <div>
+                <div className="border-b border-zinc-100 pb-3 mb-4 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs font-black">1</span>
+                      Select Product Category
+                    </h2>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Choose what type of handcrafted artisan product you need. The specification fields will adapt automatically.
+                    </p>
                   </div>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetSubmitForm();
+                      showToast('info', 'Form inputs have been cleared.');
+                    }}
+                    className="text-xs font-semibold text-zinc-400 hover:text-red-500 hover:bg-red-50 px-2.5 py-1 rounded-lg border border-zinc-200 transition-colors cursor-pointer"
+                    title="Clear all form inputs"
+                  >
+                    Clear Form
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {CATEGORY_CONFIG.map((cat) => {
+                    const Icon = cat.icon;
+                    const isSelected = category === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          setCategory(cat.id);
+                          showToast('info', `Switched to ${cat.label} requirements`);
+                        }}
+                        className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${isSelected
+                            ? 'bg-amber-50/80 border-amber-500 ring-2 ring-amber-500/30 shadow-sm'
+                            : 'bg-zinc-50/60 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100/60'
+                          }`}
+                      >
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 ${isSelected ? 'bg-amber-500 text-white' : 'bg-zinc-200 text-zinc-600'
+                          }`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className={`text-xs font-bold ${isSelected ? 'text-amber-950 font-black' : 'text-zinc-800'}`}>
+                            {cat.label}
+                          </h4>
+                          <p className="text-[10px] text-zinc-500 line-clamp-1 mt-0.5 leading-tight">
+                            {cat.desc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </section>
-        )}
 
-        {/* ========================================================= */}
-        {/* 3. DYNAMIC PRODUCT GRID (From MongoDB Database)            */}
-        {/* ========================================================= */}
-        <section id="feed" className="space-y-3">
-          {/* Active Filter Pill Bar if filtered */}
-          {(activeCategory !== 'All' || activeSubcategory !== 'All' || searchFilter) && (
-            <div className="bg-white px-4 py-2.5 rounded-xl border border-zinc-200 text-xs flex flex-wrap items-center justify-between gap-2 shadow-2xs">
-              <div className="flex items-center gap-2">
-                <span className="text-zinc-500">Active Filter:</span>
-                {activeCategory !== 'All' && (
-                  <span className="px-2.5 py-1 rounded-full bg-orange-100 text-[#ff6a00] font-bold">
-                    Category: {activeCategory}
+              {/* STEP 2: CATEGORY-SPECIFIC DETAILS */}
+              <div className="border-t border-zinc-100 pt-5 space-y-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-700 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    {currentCategoryConfig?.label} Specifications
+                  </h3>
+                  <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                    Category: {currentCategoryConfig?.label}
                   </span>
-                )}
-                {activeSubcategory !== 'All' && (
-                  <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold">
-                    Subcategory: {activeSubcategory}
-                  </span>
-                )}
-                {searchFilter && (
-                  <span className="px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-800 font-bold">
-                    Search: "{searchFilter}"
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={() => {
-                  setActiveCategory('All');
-                  setActiveSubcategory('All');
-                  setSearchFilter('');
-                }}
-                className="text-[#ff6a00] font-bold hover:underline cursor-pointer"
-              >
-                Clear all filters &times;
-              </button>
-            </div>
-          )}
+                </div>
 
-          {/* PRODUCT GRID OR EMPTY STATE */}
-          {isLoading ? (
-            <div className="py-20 text-center flex flex-col items-center justify-center">
-              <div className="w-8 h-8 rounded-full border-2 border-[#ff6a00] border-t-transparent animate-spin mb-3"></div>
-              <p className="text-xs text-zinc-500 font-medium">Loading live artisan products from database...</p>
-            </div>
-          ) : displayedFeed.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3">
-              {displayedFeed.map((prod) => (
-                <div
-                  key={prod.id}
-                  className="group bg-white rounded-xl p-2.5 border border-zinc-200/70 hover:border-[#ff6a00]/50 hover:shadow-lg transition-all flex flex-col justify-between"
-                >
-                  {/* Image Stage */}
-                  <div className="relative aspect-square rounded-lg overflow-hidden bg-zinc-100 mb-2">
-                    <Link href={`/product/${prod.id}`} className="block w-full h-full">
-                      <img
-                        src={prod.imageUrl}
-                        alt={prod.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                    </Link>
+                {/* Common: Product Name */}
+                <div>
+                  <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                    Product / Requirement Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={
+                      category === 'fashion'
+                        ? 'e.g. Handloom Banarasi Silk Saree, Embroidered Kurta'
+                        : category === 'jewelry'
+                          ? 'e.g. Kundan Jadau Choker Set, 92.5 Silver Bangle'
+                          : category === 'home_decor'
+                            ? 'e.g. Solid Brass Peacock Urli, Carved Teakwood Frame'
+                            : 'e.g. Custom Artisan Gift Box, Hand-tooled Leather Diary'
+                    }
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                  />
+                </div>
 
-                    <div className="absolute bottom-1.5 right-1.5 p-1 rounded-md bg-black/40 backdrop-blur-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Camera className="w-3.5 h-3.5" />
+                {/* ======================================================== */}
+                {/* 1. DYNAMIC FIELDS FOR FASHION & APPAREL */}
+                {/* ======================================================== */}
+                {category === 'fashion' && (
+                  <div className="p-4 bg-rose-50/40 rounded-2xl border border-rose-100 space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {/* Department / Gender */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Department / Gender
+                        </label>
+                        <select
+                          value={fashionGender}
+                          onChange={(e) => setFashionGender(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Women's Wear">Women's Wear</option>
+                          <option value="Men's Wear">Men's Wear</option>
+                          <option value="Kids Ethnic">Kids Ethnic</option>
+                          <option value="Unisex Fabric">Unisex Fabric</option>
+                        </select>
+                      </div>
+
+                      {/* Apparel Size */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Apparel Size
+                        </label>
+                        <select
+                          value={fashionSize}
+                          onChange={(e) => setFashionSize(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="XS (34 Chest)">XS (34 Chest)</option>
+                          <option value="S (36 Chest)">S (36 Chest)</option>
+                          <option value="M (38 Chest)">M (38 Chest)</option>
+                          <option value="L (40 Chest)">L (40 Chest)</option>
+                          <option value="XL (42 Chest)">XL (42 Chest)</option>
+                          <option value="XXL (44 Chest)">XXL (44 Chest)</option>
+                          <option value="Free Size (Saree/Fabric)">Free Size (Saree / Fabric)</option>
+                          <option value="Custom Measurement">Custom Measurement</option>
+                        </select>
+                      </div>
+
+                      {/* Fabric / Material */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Fabric / Weave
+                        </label>
+                        <select
+                          value={fashionFabric}
+                          onChange={(e) => setFashionFabric(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Pure Handloom Silk">Pure Handloom Silk</option>
+                          <option value="Banarasi Katan Silk">Banarasi Katan Silk</option>
+                          <option value="Chanderi Silk Cotton">Chanderi Silk Cotton</option>
+                          <option value="Khadi Cotton Handspun">Khadi Cotton Handspun</option>
+                          <option value="Raw Silk / Tussar">Raw Silk / Tussar</option>
+                          <option value="Georgette / Chiffon">Georgette / Chiffon</option>
+                          <option value="Velvet">Velvet</option>
+                          <option value="Linen Blend">Linen Blend</option>
+                        </select>
+                      </div>
                     </div>
 
-                    {prod.verified && (
-                      <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[9px] font-bold">
-                        Verified
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Color & Embroidery / Zari Work
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Royal Blue with Antique Gold Zari border"
+                          value={fashionColorWork}
+                          onChange={(e) => setFashionColorWork(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        />
                       </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Custom Length / Bust / Waist (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Length 44 inch, Waist 34 inch"
+                          value={fashionCustomMeasurements}
+                          onChange={(e) => setFashionCustomMeasurements(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ======================================================== */}
+                {/* 2. DYNAMIC FIELDS FOR JEWELRY & SILVERWARE */}
+                {/* ======================================================== */}
+                {category === 'jewelry' && (
+                  <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {/* Jewelry Type */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Jewelry Piece Type
+                        </label>
+                        <select
+                          value={jewelryType}
+                          onChange={(e) => setJewelryType(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Necklace & Choker">Necklace & Choker</option>
+                          <option value="Bangles & Kadas">Bangles & Kadas</option>
+                          <option value="Earrings & Jhumkas">Earrings & Jhumkas</option>
+                          <option value="Rings">Finger Ring</option>
+                          <option value="Silverware / Utensil">Silverware / Puja Utensil</option>
+                          <option value="Anklet / Payal">Anklet / Payal</option>
+                          <option value="Complete Bridal Set">Complete Bridal Set</option>
+                        </select>
+                      </div>
+
+                      {/* Metal & Purity */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Metal & Purity
+                        </label>
+                        <select
+                          value={metalPurity}
+                          onChange={(e) => setMetalPurity(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="92.5 Sterling Silver">92.5 Sterling Silver</option>
+                          <option value="22K Gold Plated Brass">22K Gold Plated Brass</option>
+                          <option value="Oxidized Silver Finish">Oxidized Silver Finish</option>
+                          <option value="Pure Brass / Copper">Pure Brass / Copper</option>
+                          <option value="Solid 18K/22K Gold">Solid 18K/22K Gold</option>
+                        </select>
+                      </div>
+
+                      {/* Gemstone / Inlay */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Stone / Inlay Style
+                        </label>
+                        <select
+                          value={gemstoneType}
+                          onChange={(e) => setGemstoneType(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Kundan & Polki">Kundan & Polki</option>
+                          <option value="Natural Basra / Rice Pearls">Natural Pearls</option>
+                          <option value="Semi-Precious Gemstones">Semi-Precious Gemstones</option>
+                          <option value="Temple Art Enamel (Meenakari)">Temple Art / Meenakari</option>
+                          <option value="Plain High-Polish Metal">Plain High-Polish Metal</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Size (Bangle size / Ring size / Length)
+                        </label>
+                        <select
+                          value={jewelrySize}
+                          onChange={(e) => setJewelrySize(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value='Standard (16"-18" Necklace)'>Standard (16"-18" Necklace)</option>
+                          <option value="Bangle 2.4 (Small)">Bangle 2.4 (Small)</option>
+                          <option value="Bangle 2.6 (Medium)">Bangle 2.6 (Medium)</option>
+                          <option value="Bangle 2.8 (Large)">Bangle 2.8 (Large)</option>
+                          <option value="Ring Size 12-16">Ring Size 12-16</option>
+                          <option value="Custom Length / Openable">Custom Length / Openable</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Estimated Weight Target (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 50 grams, 120 grams"
+                          value={estimatedWeight}
+                          onChange={(e) => setEstimatedWeight(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ======================================================== */}
+                {/* 3. DYNAMIC FIELDS FOR HOME DECOR & CRAFTS */}
+                {/* ======================================================== */}
+                {category === 'home_decor' && (
+                  <div className="p-4 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Craft Medium */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Craft Material & Medium
+                        </label>
+                        <select
+                          value={craftMedium}
+                          onChange={(e) => setCraftMedium(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Solid Brass & Bronze">Solid Brass & Bronze</option>
+                          <option value="Hand-carved Teakwood / Sheesham">Hand-carved Teakwood / Sheesham</option>
+                          <option value="Jaipur Blue Pottery / Ceramic">Jaipur Blue Pottery / Ceramic</option>
+                          <option value="Makrana Marble / Soapstone">Makrana Marble / Soapstone</option>
+                          <option value="Handloom Woolen / Jute Rug">Handloom Woolen / Jute Rug</option>
+                        </select>
+                      </div>
+
+                      {/* Finish */}
+                      <div>
+                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                          Finish & Coating
+                        </label>
+                        <select
+                          value={decorFinish}
+                          onChange={(e) => setDecorFinish(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        >
+                          <option value="Antique Polish with Lacquer">Antique Polish with Lacquer</option>
+                          <option value="Glossy Mirror Finish">Glossy Mirror Finish</option>
+                          <option value="Distressed Vintage Rustic">Distressed Vintage Rustic</option>
+                          <option value="Natural Wood Grain Wax">Natural Wood Grain Wax</option>
+                          <option value="Hand-painted Glazed">Hand-painted Glazed</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                        Dimensions & Weight (Diameter / Length x Width x Height)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 14 inch diameter, 3.5 kg weight or 24 x 18 x 6 inches"
+                        value={decorDimensions}
+                        onChange={(e) => setDecorDimensions(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* ======================================================== */}
+                {/* 4. DYNAMIC FIELDS FOR OTHER CRAFT */}
+                {/* ======================================================== */}
+                {category === 'other' && (
+                  <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-3 animate-fadeIn">
+                    <div>
+                      <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+                        Specific Dimensions / Size & Craft Parameters
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. A5 Notebook (8.5 x 5.5 inches), 200 GSM handmade paper"
+                        value={otherSizeSpec}
+                        onChange={(e) => setOtherSizeSpec(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Common: Estimated Quantity */}
+                <div>
+                  <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                    Estimated Quantity (Units)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value) || 1)}
+                    className="w-full sm:w-48 px-4 py-2.5 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                  />
+                </div>
+
+                {/* Description / Special Instructions */}
+                <div>
+                  <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                    Customization Instructions & Details
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Provide any custom carving details, personalized engravings, lining preferences, packaging requirements, etc."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                  />
+                </div>
+
+                {/* MULTIPLE IMAGE UPLOAD */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-zinc-800 uppercase tracking-wider">
+                      Reference Photos (Upload Multiple Photos)
+                    </label>
+                    {images.length > 0 && (
+                      <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                        {images.length} photo(s) selected
+                      </span>
                     )}
                   </div>
 
-                  {/* Details */}
-                  <div className="space-y-1 flex-1 flex flex-col justify-between">
-                    <Link href={`/product/${prod.id}`}>
-                      <h4 className="text-xs text-zinc-800 line-clamp-2 leading-snug group-hover:text-[#ff6a00] transition-colors font-medium">
-                        {prod.title}
-                      </h4>
-                    </Link>
+                  {images.length > 0 && (
+                    <div className="mb-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-200">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {images.map((imgSrc, idx) => (
+                          <div
+                            key={idx}
+                            className="relative aspect-square rounded-xl bg-zinc-100 border border-zinc-200 overflow-hidden group shadow-2xs"
+                          >
+                            <img
+                              src={imgSrc}
+                              alt={`Reference Photo ${idx + 1}`}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => setPreviewImageModal(imgSrc)}
+                                className="p-1.5 bg-white/90 text-zinc-800 rounded-lg hover:bg-white transition-colors cursor-pointer"
+                                title="Enlarge Photo"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(idx)}
+                                className="p-1.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors cursor-pointer"
+                                title="Delete Photo"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                              Photo {idx + 1}
+                            </span>
+                          </div>
+                        ))}
 
-                    <div className="pt-1">
-                      <p className="text-xs sm:text-sm font-black text-zinc-950 leading-tight">
-                        {prod.price}
-                      </p>
-                      <p className="text-[11px] text-zinc-400 font-normal mt-0.5">
-                        {prod.minOrder}
-                      </p>
-
-                      <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-0.5">
-                        <div className="flex items-center gap-0.5 text-amber-500 font-bold">
-                          <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                          <span>{prod.rating || 5.0}</span>
-                        </div>
-                        <span className="truncate max-w-[90px]">{prod.ordersCount || 'Artisan Direct'}</span>
+                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-300 hover:border-amber-500 bg-white hover:bg-amber-50/30 flex flex-col items-center justify-center cursor-pointer transition-colors text-zinc-500 hover:text-amber-700">
+                          <Plus className="w-6 h-6 mb-1 text-amber-600" />
+                          <span className="text-[11px] font-bold">Add More</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleMultipleImageFilesChange}
+                            className="hidden"
+                          />
+                        </label>
                       </div>
+
+                      <div className="mt-3 flex items-center justify-between text-[11px] text-zinc-400">
+                        <span>Hover over any photo to preview or remove.</span>
+                        <button
+                          type="button"
+                          onClick={() => setImages([])}
+                          className="text-rose-600 hover:text-rose-800 font-bold cursor-pointer"
+                        >
+                          Clear All Photos
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {images.length === 0 && (
+                    <div className="space-y-3">
+                      <label className="border-2 border-dashed border-zinc-300 hover:border-amber-500 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-zinc-50/50 hover:bg-amber-50/30">
+                        <Upload className="w-8 h-8 text-amber-600 mb-2" />
+                        <span className="text-xs font-bold text-zinc-700">
+                          Click to select photos from your device
+                        </span>
+                        <span className="text-[11px] text-zinc-400 mt-1">
+                          Upload front angle, side angle, or close-ups (PNG, JPG, WEBP up to 10MB each)
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleMultipleImageFilesChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* STEP 3: EMAIL & OTP VERIFICATION */}
+              <div className="border-t border-zinc-100 pt-6 space-y-4">
+                <div>
+                  <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+                    <span className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-black">2</span>
+                    Email & OTP Verification
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Your email is required so our artisan team can review specifications and send quotations.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                      Your Email Address <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="email"
+                        required
+                        placeholder="e.g. client@example.com"
+                        value={userEmail}
+                        onChange={(e) => setUserEmail(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                      Phone Number (Optional)
+                    </label>
+                    <div className="relative">
+                      <Phone className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="tel"
+                        placeholder="e.g. +91 98765 43210"
+                        value={userPhone}
+                        onChange={(e) => setUserPhone(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      />
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            /* Clean Empty State */
-            <div className="bg-white rounded-3xl p-10 sm:p-14 border border-zinc-200/90 text-center flex flex-col items-center justify-center space-y-4 shadow-2xs">
-              <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-[#ff6a00]">
-                <Package className="w-8 h-8" />
-              </div>
-              <div className="max-w-md space-y-1.5">
-                <h3 className="text-base sm:text-lg font-bold text-zinc-900">
-                  {activeCategory !== 'All' || activeSubcategory !== 'All'
-                    ? `No approved products found in "${activeSubcategory !== 'All' ? activeSubcategory : activeCategory}"`
-                    : 'Catalog is currently ready for live listings'}
-                </h3>
-                <p className="text-xs text-zinc-500 leading-relaxed">
-                  Registered vendors upload handcrafted collections through the Vendor Portal. Once reviewed and approved by the Super Admin, they will immediately appear live here.
-                </p>
-              </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                <button
-                  onClick={() => {
-                    setActiveCategory('All');
-                    setActiveSubcategory('All');
-                    setSearchFilter('');
-                    fetchAllData();
-                  }}
-                  className="px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-xs font-bold text-zinc-800 flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Refresh Products</span>
-                </button>
-                <a
-                  href="http://localhost:3002/register"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-5 py-2 rounded-xl bg-[#ff6a00] hover:bg-[#e65a00] text-xs font-bold text-white flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
-                >
-                  <Store className="w-3.5 h-3.5" />
-                  <span>Register as Vendor & Upload Products</span>
-                </a>
-              </div>
-            </div>
-          )}
-        </section>
+                {!submitOtpSent ? (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={handleSendSubmitOtp}
+                      disabled={isSendingSubmitOtp || !userEmail}
+                      className="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSendingSubmitOtp ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      <span>Send Verification OTP to Email</span>
+                    </button>
+                    <p className="text-[11px] text-zinc-400 text-center mt-2">
+                      An OTP code will be sent to your email to verify before submitting.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-5 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-3 animate-fadeIn">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-indigo-900">
+                        Enter 6-Digit OTP sent to {userEmail}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleSendSubmitOtp}
+                        className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                      >
+                        Resend OTP
+                      </button>
+                    </div>
 
-        {/* Scroll to Top */}
-        <div className="fixed bottom-6 right-6 z-30 flex flex-col gap-2">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="w-10 h-10 rounded-full bg-white text-zinc-700 hover:text-[#ff6a00] shadow-lg border border-zinc-200 flex items-center justify-center transition-all hover:scale-110 cursor-pointer"
-            title="Scroll to top"
-          >
-            <ArrowUp className="w-5 h-5" />
-          </button>
-        </div>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      placeholder="Enter 6-digit OTP"
+                      value={submitOtp}
+                      onChange={(e) => setSubmitOtp(e.target.value)}
+                      className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+
+                    {submitDevOtp && (
+                      <div className="p-2.5 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
+                        <span className="text-xs font-semibold text-amber-900">
+                          Demo OTP Code: <strong className="font-mono text-sm tracking-wider bg-amber-200 px-2 py-0.5 rounded">{submitDevOtp}</strong> (Auto-filled)
+                        </span>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={isSubmittingInquiry || !submitOtp}
+                      className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSubmittingInquiry ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="w-4 h-4" />
+                      )}
+                      <span>Verify OTP & Submit Requirement</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 2: TRACK INQUIRY STATUS */}
+        {/* ======================================================== */}
+        {activeTab === 'track' && (
+          <div className="space-y-6">
+            {!isTrackVerified ? (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xl shadow-zinc-200/50 space-y-6">
+                <div className="text-center max-w-md mx-auto">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center mx-auto mb-3">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <h2 className="text-xl font-bold text-zinc-900">Track Your Requirement Status</h2>
+                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+                    Enter the email address you used when submitting your requirement. We'll send a 6-digit OTP for secure access.
+                  </p>
+                </div>
+
+                <div className="space-y-4 max-w-md mx-auto">
+                  <div>
+                    <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
+                      Registered Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="email"
+                        placeholder="e.g. client@example.com"
+                        value={trackEmail}
+                        onChange={(e) => setTrackEmail(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                  </div>
+
+                  {!trackOtpSent ? (
+                    <button
+                      type="button"
+                      onClick={handleSendTrackOtp}
+                      disabled={isSendingTrackOtp || !trackEmail}
+                      className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSendingTrackOtp ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      <span>Send Verification Code</span>
+                    </button>
+                  ) : (
+                    <div className="space-y-3 p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl animate-fadeIn">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-900">Enter OTP Code</span>
+                        <button
+                          type="button"
+                          onClick={handleSendTrackOtp}
+                          className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                        >
+                          Resend Code
+                        </button>
+                      </div>
+
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="Enter 6-digit code"
+                        value={trackOtp}
+                        onChange={(e) => setTrackOtp(e.target.value)}
+                        className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                      />
+
+                      {trackDevOtp && (
+                        <div className="p-2.5 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
+                          <span className="text-xs font-semibold text-amber-900">
+                            Demo Code: <strong className="font-mono text-sm tracking-wider bg-amber-200 px-2 py-0.5 rounded">{trackDevOtp}</strong> (Auto-filled)
+                          </span>
+                        </div>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={handleVerifyAndFetchInquiries}
+                        disabled={isVerifyingTrack || !trackOtp}
+                        className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        {isVerifyingTrack ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <CheckCircle2 className="w-4 h-4" />
+                        )}
+                        <span>Verify & View Inquiries</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <h3 className="text-sm font-bold text-zinc-900">
+                        Inquiries for <span className="text-indigo-600">{trackEmail}</span>
+                      </h3>
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-0.5">Showing {myInquiries.length} submitted requirement(s)</p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleVerifyAndFetchInquiries}
+                      className="p-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                      title="Refresh inquiries"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isVerifyingTrack ? 'animate-spin' : ''}`} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsTrackVerified(false);
+                        setTrackOtpSent(false);
+                        setTrackOtp('');
+                      }}
+                      className="text-xs font-bold text-zinc-500 hover:text-zinc-800 px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 transition-colors cursor-pointer"
+                    >
+                      Change Email
+                    </button>
+                  </div>
+                </div>
+
+                {myInquiries.length === 0 ? (
+                  <div className="bg-white rounded-3xl p-12 text-center border border-zinc-200 shadow-sm">
+                    <FilePlus className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+                    <h3 className="text-base font-bold text-zinc-700">No Inquiries Found for this Email</h3>
+                    <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">
+                      You haven't submitted any custom requirements with this email yet.
+                    </p>
+                    <button
+                      onClick={() => setActiveTab('submit')}
+                      className="mt-4 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
+                    >
+                      <FilePlus className="w-4 h-4" />
+                      <span>Submit Your First Requirement</span>
+                    </button>
+                  </div>
+                ) : (
+                  myInquiries.map((inq) => {
+                    const primaryImage = inq.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80';
+                    const allImages = inq.images && inq.images.length > 0 ? inq.images : [primaryImage];
+
+                    return (
+                      <div
+                        key={inq._id || inq.inquiryNumber}
+                        className="bg-white rounded-3xl border border-zinc-200 shadow-lg shadow-zinc-200/40 overflow-hidden transition-all hover:border-zinc-300"
+                      >
+                        <div className="p-4 bg-zinc-50/80 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
+                            <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">
+                              #{inq.inquiryNumber}
+                            </span>
+                            {getCategoryBadge(inq.category)}
+                            <span className="text-xs text-zinc-400">
+                              Submitted {inq.createdAt ? new Date(inq.createdAt).toLocaleDateString() : 'Recently'}
+                            </span>
+                          </div>
+
+                          <div>{getStatusBadge(inq.status)}</div>
+                        </div>
+
+                        <div className="p-6 space-y-5">
+                          <div className="flex flex-col sm:flex-row gap-5">
+                            <div className="shrink-0 space-y-2">
+                              <div
+                                onClick={() => setPreviewImageModal(primaryImage)}
+                                className="w-28 h-28 rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden cursor-pointer relative group shadow-sm"
+                              >
+                                <img
+                                  src={primaryImage}
+                                  alt={inq.name}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                  <Eye className="w-5 h-5 text-white" />
+                                </div>
+                              </div>
+
+                              {allImages.length > 1 && (
+                                <div className="flex items-center gap-1.5 max-w-[120px] overflow-x-auto pb-1">
+                                  {allImages.map((extraImg, imgIdx) => (
+                                    <div
+                                      key={imgIdx}
+                                      onClick={() => setPreviewImageModal(extraImg)}
+                                      className="w-8 h-8 rounded-lg overflow-hidden border border-zinc-200 cursor-pointer shrink-0 hover:opacity-80"
+                                      title={`View Photo ${imgIdx + 1}`}
+                                    >
+                                      <img
+                                        src={extraImg}
+                                        alt={`Thumbnail ${imgIdx + 1}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-lg font-bold text-zinc-900">{inq.name}</h4>
+                              <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                                <span className="bg-amber-50 text-amber-900 font-semibold px-2.5 py-1 rounded-lg border border-amber-200">
+                                  Specifications: {inq.size}
+                                </span>
+                                <span className="bg-zinc-100 text-zinc-700 font-semibold px-2.5 py-1 rounded-lg">
+                                  Qty: {inq.quantity || 1} units
+                                </span>
+                                {allImages.length > 1 && (
+                                  <span className="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-lg border border-indigo-100">
+                                    {allImages.length} Photos Attached
+                                  </span>
+                                )}
+                              </div>
+
+                              {inq.description && (
+                                <p className="text-xs text-zinc-600 mt-3 leading-relaxed bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                                  "{inq.description}"
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {inq.quotedPrice && inq.quotedPrice > 0 ? (
+                            <div className="p-4 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border-l-4 border-l-emerald-600 rounded-r-2xl border border-emerald-200">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
+                                    Official Quotation From Amba Lifestyle
+                                  </p>
+                                  <h4 className="text-2xl font-black text-emerald-700 mt-0.5">
+                                    ₹{inq.quotedPrice.toLocaleString()}{' '}
+                                    <span className="text-xs font-semibold text-emerald-600">INR</span>
+                                  </h4>
+                                </div>
+                                <span className="text-xs bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-xl shadow-xs">
+                                  Verified Quote
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center gap-2 text-xs text-amber-800">
+                              <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                              <span>Quotation is being prepared by our master artisans and pricing team.</span>
+                            </div>
+                          )}
+
+                          {inq.adminNotes && (
+                            <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 mb-1">
+                                <MessageSquare className="w-3.5 h-3.5 text-indigo-600" />
+                                <span>Note from Amba Lifestyle Admin:</span>
+                              </div>
+                              <p className="text-xs text-zinc-700 leading-relaxed italic">
+                                "{inq.adminNotes}"
+                              </p>
+                            </div>
+                          )}
+
+                          <div className="pt-3 border-t border-zinc-100">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                              Workflow Progress
+                            </p>
+                            <div className="grid grid-cols-4 gap-2 text-center text-[10px]">
+                              <div className={`p-2 rounded-lg font-bold ${inq.status !== 'rejected' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-zinc-100 text-zinc-400'}`}>
+                                1. Submitted
+                              </div>
+                              <div className={`p-2 rounded-lg font-bold ${['in_review', 'quoted', 'approved'].includes(inq.status) ? 'bg-sky-50 text-sky-800 border border-sky-200' : 'bg-zinc-100 text-zinc-400'}`}>
+                                2. In Review
+                              </div>
+                              <div className={`p-2 rounded-lg font-bold ${['quoted', 'approved'].includes(inq.status) ? 'bg-purple-50 text-purple-800 border border-purple-200' : 'bg-zinc-100 text-zinc-400'}`}>
+                                3. Quoted
+                              </div>
+                              <div className={`p-2 rounded-lg font-bold ${inq.status === 'approved' ? 'bg-emerald-500 text-white shadow-xs' : 'bg-zinc-100 text-zinc-400'}`}>
+                                4. Approved
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
-      <Footer />
+      {/* 4. FOOTER */}
+      <footer className="mt-auto bg-stone-900 text-zinc-400 py-8 border-t border-zinc-800 text-xs text-center">
+        <div className="max-w-4xl mx-auto px-4 space-y-2">
+          <p className="font-serif font-bold text-white text-sm tracking-wider uppercase">
+            AMBA LIFESTYLE PLATFORM
+          </p>
+          <p className="text-zinc-500 text-[11px]">
+            Master Craftsmen & Custom Artisan Production • Protected by OTP Email Verification
+          </p>
+          <p className="text-zinc-600 text-[10px]">
+            © 2026 Amba Lifestyle. All rights reserved.
+          </p>
+        </div>
+      </footer>
+
+      {/* MODAL: IMAGE PREVIEW */}
+      {previewImageModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
+          onClick={() => setPreviewImageModal(null)}
+        >
+          <div className="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden p-2 shadow-2xl">
+            <button
+              onClick={() => setPreviewImageModal(null)}
+              className="absolute top-4 right-4 p-2 bg-black/60 text-white rounded-full hover:bg-black transition-colors z-10 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={previewImageModal}
+              alt="Enlarged Reference"
+              className="w-full max-h-[75vh] object-contain rounded-xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

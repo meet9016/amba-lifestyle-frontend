@@ -48,6 +48,14 @@ export const API_ENDPOINTS = {
     ADD_MESSAGE: (id: string) => `${API_BASE_URL}/support/${id}/messages`,
   },
 
+  // Customer Custom Requirements & Inquiries
+  INQUIRIES: {
+    SEND_OTP: `${API_BASE_URL}/inquiries/send-otp`,
+    VERIFY_OTP: `${API_BASE_URL}/inquiries/verify-otp`,
+    CREATE: `${API_BASE_URL}/inquiries`,
+    MY_INQUIRIES: `${API_BASE_URL}/inquiries/my-inquiries`,
+  },
+
   // Health
   HEALTH: `${API_BASE_URL}/health`,
 } as const;
