@@ -359,6 +359,8 @@ export default function RequirementPortal() {
         email: userEmail.trim().toLowerCase(),
         phone: userPhone.trim(),
         images: images,
+        inquiryType: 'custom_requirement',
+        isDirectProductInquiry: false,
         otp: submitOtp.trim()
       };
 
@@ -604,6 +606,7 @@ export default function RequirementPortal() {
         phone: inquireCustomerPhone.trim(),
         images: pImg ? [pImg] : [],
         isDirectProductInquiry: true,
+        inquiryType: 'artisan_product',
         price: pPrice,
         otp: inquireOtp.trim()
       };
