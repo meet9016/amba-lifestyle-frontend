@@ -34,6 +34,15 @@ import { apiClient, API_ENDPOINTS } from '@/lib/api';
 
 type CategoryType = 'fashion' | 'jewelry' | 'home_decor' | 'other';
 
+export interface InquiryMessage {
+  _id?: string;
+  sender: 'customer' | 'admin';
+  senderName: string;
+  message: string;
+  attachments?: string[];
+  createdAt: string;
+}
+
 interface CustomerInquiry {
   _id: string;
   inquiryNumber: string;
@@ -49,6 +58,7 @@ interface CustomerInquiry {
   status: 'pending' | 'in_review' | 'quoted' | 'approved' | 'rejected';
   quotedPrice?: number;
   adminNotes?: string;
+  messages?: InquiryMessage[];
   timeline?: Array<{
     status: string;
     note: string;
@@ -135,6 +145,12 @@ export default function RequirementPortal() {
   const [isVerifyingTrack, setIsVerifyingTrack] = useState<boolean>(false);
   const [isTrackVerified, setIsTrackVerified] = useState<boolean>(false);
   const [myInquiries, setMyInquiries] = useState<CustomerInquiry[]>([]);
+
+  // INQUIRY MESSAGING STATE
+  const [messageInputs, setMessageInputs] = useState<Record<string, string>>({});
+  const [sendingMessageIds, setSendingMessageIds] = useState<Record<string, boolean>>({});
+  const [messageSuccessToast, setMessageSuccessToast] = useState<{ id: string; text: string } | null>(null);
+  const [isRefreshingInquiries, setIsRefreshingInquiries] = useState<boolean>(false);
 
   // NOTIFICATION & IMAGE PREVIEW
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
@@ -396,6 +412,95 @@ export default function RequirementPortal() {
       showToast('error', err.response?.data?.message || 'Invalid or expired OTP. Please try again.');
     } finally {
       setIsVerifyingTrack(false);
+    }
+  };
+
+  // REFRESH INQUIRIES AND LIVE MESSAGES WITHOUT PAGE RELOAD
+  const handleRefreshMyInquiries = async (silent = false) => {
+    if (!trackEmail.trim()) return;
+    if (!silent) setIsRefreshingInquiries(true);
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.MY_INQUIRIES, {
+        email: trackEmail.trim().toLowerCase(),
+        otp: trackOtp.trim()
+      });
+
+      if (res.data?.data) {
+        setMyInquiries(res.data.data);
+        if (!silent) {
+          showToast('success', 'Latest messages and inquiry updates loaded!');
+        }
+      }
+    } catch (err: any) {
+      if (!silent) {
+        console.error('Failed to refresh inquiries:', err);
+      }
+    } finally {
+      if (!silent) setIsRefreshingInquiries(false);
+    }
+  };
+
+  // Auto-refresh when customer switches to Track tab
+  useEffect(() => {
+    if (activeTab === 'track' && isTrackVerified && trackEmail.trim()) {
+      handleRefreshMyInquiries(true);
+    }
+  }, [activeTab]);
+
+  // Auto-refresh when customer switches back to this browser window
+  useEffect(() => {
+    const handleFocus = () => {
+      if (isTrackVerified && trackEmail.trim()) {
+        handleRefreshMyInquiries(true);
+      }
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [isTrackVerified, trackEmail, trackOtp]);
+
+  // SEND CUSTOMER MESSAGE TO ADMIN FOR AN INQUIRY
+  const handleSendMessage = async (inq: CustomerInquiry) => {
+    const inqKey = inq.inquiryNumber || inq._id;
+    const text = (messageInputs[inqKey] || '').trim();
+    if (!text) return;
+
+    setSendingMessageIds((prev) => ({ ...prev, [inqKey]: true }));
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.INQUIRIES.ADD_MESSAGE(inqKey), {
+        message: text,
+        sender: 'customer',
+        senderName: inq.name || trackEmail || 'Customer'
+      });
+
+      const newMsg: InquiryMessage = res.data?.data?.message || {
+        _id: 'msg_' + Date.now(),
+        sender: 'customer',
+        senderName: inq.name || trackEmail || 'Customer',
+        message: text,
+        createdAt: new Date().toISOString()
+      };
+
+      setMyInquiries((prev) =>
+        prev.map((item) => {
+          if ((item.inquiryNumber && item.inquiryNumber === inq.inquiryNumber) || item._id === inq._id) {
+            return {
+              ...item,
+              messages: [...(item.messages || []), newMsg]
+            };
+          }
+          return item;
+        })
+      );
+
+      setMessageInputs((prev) => ({ ...prev, [inqKey]: '' }));
+      setMessageSuccessToast({ id: inqKey, text: 'Message delivered to Admin successfully!' });
+      setTimeout(() => setMessageSuccessToast(null), 4000);
+      handleRefreshMyInquiries(true);
+    } catch (err: any) {
+      console.error('Failed to send message:', err);
+      showToast('error', err?.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setSendingMessageIds((prev) => ({ ...prev, [inqKey]: false }));
     }
   };
 
@@ -1323,11 +1428,13 @@ export default function RequirementPortal() {
 
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={handleVerifyAndFetchInquiries}
-                      className="p-2 text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
-                      title="Refresh inquiries"
+                      onClick={() => handleRefreshMyInquiries(false)}
+                      disabled={isRefreshingInquiries}
+                      className="px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                      title="Refresh messages and status"
                     >
-                      <RefreshCw className={`w-4 h-4 ${isVerifyingTrack ? 'animate-spin' : ''}`} />
+                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-indigo-600' : ''}`} />
+                      <span>Refresh Messages</span>
                     </button>
                     <button
                       onClick={() => {
@@ -1477,6 +1584,114 @@ export default function RequirementPortal() {
                               </p>
                             </div>
                           )}
+
+                          {/* DIRECT MESSAGE & INQUIRY CHAT THREAD WITH ADMIN */}
+                          <div className="p-4 bg-zinc-50/90 border border-zinc-200 rounded-2xl space-y-3">
+                            <div className="flex items-center justify-between border-b border-zinc-200/80 pb-2.5">
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                                  <MessageSquare className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <h5 className="text-xs font-bold text-zinc-900">Send Message to Admin</h5>
+                                  <p className="text-[10px] text-zinc-500">Your message will directly show on the Super Admin panel</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRefreshMyInquiries(false)}
+                                  disabled={isRefreshingInquiries}
+                                  className="p-1 text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                                  title="Refresh live messages"
+                                >
+                                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-indigo-600' : ''}`} />
+                                </button>
+                                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                                  {inq.messages && inq.messages.length > 0 ? `${inq.messages.length} Message${inq.messages.length > 1 ? 's' : ''}` : 'No messages yet'}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Message History */}
+                            {inq.messages && inq.messages.length > 0 ? (
+                              <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+                                {inq.messages.map((msg, mIdx) => {
+                                  const isCustomer = msg.sender === 'customer';
+                                  return (
+                                    <div
+                                      key={msg._id || mIdx}
+                                      className={`flex flex-col ${isCustomer ? 'items-end' : 'items-start'}`}
+                                    >
+                                      <div className="flex items-center gap-1.5 mb-1 px-1 text-[10px]">
+                                        <span className={`font-bold ${isCustomer ? 'text-indigo-600' : 'text-emerald-700'}`}>
+                                          {isCustomer ? 'You (Customer)' : 'Amba Lifestyle Support Admin'}
+                                        </span>
+                                        <span className="text-zinc-400">
+                                          {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                                        </span>
+                                      </div>
+                                      <div
+                                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-medium leading-relaxed shadow-2xs ${
+                                          isCustomer
+                                            ? 'bg-indigo-600 text-white rounded-br-xs'
+                                            : 'bg-white text-zinc-800 border border-zinc-200/90 rounded-bl-xs'
+                                        }`}
+                                      >
+                                        <p className="whitespace-pre-wrap">{msg.message}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-zinc-400 italic py-1">
+                                No messages sent yet. Write your message below to send it directly to the Admin.
+                              </p>
+                            )}
+
+                            {messageSuccessToast && messageSuccessToast.id === (inq.inquiryNumber || inq._id) && (
+                              <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                                <span>Message delivered! It is now showing in the Admin Panel.</span>
+                              </div>
+                            )}
+
+                            {/* Message Input Box */}
+                            <div className="pt-2 flex items-center gap-2">
+                              <input
+                                type="text"
+                                placeholder="Type your message for Admin here..."
+                                value={messageInputs[inq.inquiryNumber || inq._id] || ''}
+                                onChange={(e) =>
+                                  setMessageInputs((prev) => ({
+                                    ...prev,
+                                    [inq.inquiryNumber || inq._id]: e.target.value
+                                  }))
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleSendMessage(inq);
+                                  }
+                                }}
+                                className="flex-1 px-3.5 py-2 text-xs bg-white border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-zinc-800 placeholder:text-zinc-400"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleSendMessage(inq)}
+                                disabled={sendingMessageIds[inq.inquiryNumber || inq._id] || !(messageInputs[inq.inquiryNumber || inq._id] || '').trim()}
+                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
+                              >
+                                {sendingMessageIds[inq.inquiryNumber || inq._id] ? (
+                                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Send className="w-3.5 h-3.5" />
+                                )}
+                                <span>Send Message</span>
+                              </button>
+                            </div>
+                          </div>
 
                           <div className="pt-3 border-t border-zinc-100">
                             <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">

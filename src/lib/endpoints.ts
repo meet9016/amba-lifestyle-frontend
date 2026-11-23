@@ -54,6 +54,7 @@ export const API_ENDPOINTS = {
     VERIFY_OTP: `${API_BASE_URL}/inquiries/verify-otp`,
     CREATE: `${API_BASE_URL}/inquiries`,
     MY_INQUIRIES: `${API_BASE_URL}/inquiries/my-inquiries`,
+    ADD_MESSAGE: (id: string) => `${API_BASE_URL}/inquiries/${id}/messages`,
   },
 
   // Health
