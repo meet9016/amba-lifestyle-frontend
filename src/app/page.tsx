@@ -637,8 +637,8 @@ export default function RequirementPortal() {
     switch (status) {
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
-            <Clock className="w-3.5 h-3.5 text-amber-600" /> Pending Admin Review
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-900 border border-blue-200">
+            <Clock className="w-3.5 h-3.5 text-blue-800" /> Pending Admin Review
           </span>
         );
       case 'in_review':
@@ -679,23 +679,23 @@ export default function RequirementPortal() {
       case 'fashion':
         return <span className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[11px] font-bold">👗 Fashion & Apparel</span>;
       case 'jewelry':
-        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[11px] font-bold">💎 Jewelry & Silverware</span>;
+        return <span className="bg-blue-50 text-blue-900 border border-blue-200 px-2 py-0.5 rounded text-[11px] font-bold">💎 Jewelry & Silverware</span>;
       case 'home_decor':
         return <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-bold">🏺 Home Decor & Crafts</span>;
       default:
-        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded text-[11px] font-bold">✨ Custom Craft</span>;
+        return <span className="bg-blue-50 text-blue-900 border border-blue-200 px-2 py-0.5 rounded text-[11px] font-bold">✨ Custom Craft</span>;
     }
   };
 
   const currentCategoryConfig = CATEGORY_CONFIG.find((c) => c.id === category);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 via-amber-50/20 to-zinc-50 text-zinc-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex flex-col font-sans">
       {/* 1. TOP BRAND NAVIGATION BAR */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-xs">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-blue-200/60 shadow-xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-700 via-amber-600 to-amber-500 flex items-center justify-center text-white font-serif font-black text-xl shadow-md shadow-amber-600/20">
+            <div className="w-10 h-10 rounded-xl bg-blue-900 flex items-center justify-center text-white font-serif font-black text-xl shadow-md shadow-blue-900/20">
               A
             </div>
             <div>
@@ -703,7 +703,7 @@ export default function RequirementPortal() {
                 <span className="font-serif text-lg font-black tracking-tight text-zinc-900">
                   AMBA LIFESTYLE
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-900 px-2 py-0.5 rounded-full border border-blue-200">
                   Customer Portal
                 </span>
               </div>
@@ -718,10 +718,10 @@ export default function RequirementPortal() {
         <div className="fixed top-20 right-6 z-50 animate-slideIn">
           <div
             className={`px-4 py-3 rounded-xl shadow-xl border flex items-center gap-3 text-sm font-medium ${toast.type === 'success'
-                ? 'bg-emerald-900 text-emerald-50 border-emerald-700 shadow-emerald-950/20'
-                : toast.type === 'error'
-                  ? 'bg-rose-900 text-rose-50 border-rose-700 shadow-rose-950/20'
-                  : 'bg-zinc-900 text-zinc-50 border-zinc-700'
+              ? 'bg-emerald-900 text-emerald-50 border-emerald-700 shadow-emerald-950/20'
+              : toast.type === 'error'
+                ? 'bg-rose-900 text-rose-50 border-rose-700 shadow-rose-950/20'
+                : 'bg-zinc-900 text-zinc-50 border-zinc-700'
               }`}
           >
             {toast.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
@@ -736,8 +736,8 @@ export default function RequirementPortal() {
 
       {/* 2. HERO HEADER & TAB SWITCHER */}
       <section className="pt-8 pb-6 px-4 max-w-4xl mx-auto text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold mb-3">
-          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/80 border border-blue-200 text-blue-900 text-xs font-semibold mb-3">
+          <Sparkles className="w-3.5 h-3.5 text-blue-800" />
           <span>Verified Artisan Sourcing & Direct Quotation</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight font-serif">
@@ -752,33 +752,33 @@ export default function RequirementPortal() {
           <button
             onClick={() => setActiveTab('products')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'products'
-                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
-                : 'text-zinc-600 hover:text-zinc-900'
+              ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+              : 'text-zinc-600 hover:text-zinc-900'
               }`}
           >
             <ShoppingBag className="w-4 h-4 text-emerald-600" />
-            <span>Artisan Products ({catalogProducts.length})</span>
+            <span>Art Products ({catalogProducts.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('submit')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'submit'
-                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
-                : 'text-zinc-600 hover:text-zinc-900'
+              ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+              : 'text-zinc-600 hover:text-zinc-900'
               }`}
           >
-            <FilePlus className="w-4 h-4 text-amber-600" />
+            <FilePlus className="w-4 h-4 text-blue-900" />
             <span>Submit Custom Requirement</span>
           </button>
 
           <button
             onClick={() => setActiveTab('track')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${activeTab === 'track'
-                ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
-                : 'text-zinc-600 hover:text-zinc-900'
+              ? 'bg-white text-zinc-900 shadow-md scale-[1.02]'
+              : 'text-zinc-600 hover:text-zinc-900'
               }`}
           >
-            <Search className="w-4 h-4 text-indigo-600" />
+            <Search className="w-4 h-4 text-blue-900" />
             <span>Track Inquiries & Messages</span>
           </button>
         </div>
@@ -796,7 +796,7 @@ export default function RequirementPortal() {
                 <div>
                   <h2 className="text-xl font-bold text-zinc-900 flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-emerald-600" />
-                    <span>Artisan Products Catalog</span>
+                    <span>Art Products Catalog</span>
                   </h2>
                   <p className="text-xs text-zinc-500 mt-0.5">
                     Explore direct artisan products created by Amba Lifestyle. Click &quot;Inquire Now&quot; to send an inquiry directly to the Admin.
@@ -808,17 +808,17 @@ export default function RequirementPortal() {
                   </span>
                   <button
                     onClick={fetchCatalogProducts}
-                    className="p-1.5 text-zinc-400 hover:text-indigo-600 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-zinc-400 hover:text-blue-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
                     title="Refresh Products"
                   >
-                    <RefreshCw className={`w-4 h-4 ${isLoadingCatalog ? 'animate-spin text-indigo-600' : ''}`} />
+                    <RefreshCw className={`w-4 h-4 ${isLoadingCatalog ? 'animate-spin text-blue-900' : ''}`} />
                   </button>
                 </div>
               </div>
 
               {isLoadingCatalog ? (
                 <div className="py-16 text-center space-y-3">
-                  <RefreshCw className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
+                  <RefreshCw className="w-8 h-8 animate-spin text-blue-900 mx-auto" />
                   <p className="text-xs text-zinc-400 font-medium">Loading artisan catalog products...</p>
                 </div>
               ) : catalogProducts.length === 0 ? (
@@ -832,7 +832,7 @@ export default function RequirementPortal() {
                   </p>
                   <button
                     onClick={() => setActiveTab('submit')}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-2 cursor-pointer shadow-sm"
+                    className="px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold rounded-xl transition-all inline-flex items-center gap-2 cursor-pointer shadow-sm"
                   >
                     <FilePlus className="w-4 h-4" />
                     <span>Submit a Custom Requirement</span>
@@ -886,7 +886,7 @@ export default function RequirementPortal() {
                         <div className="p-4 pt-0 space-y-2">
                           <button
                             onClick={() => handleOpenProductInquiry(p)}
-                            className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
                           >
                             <MessageSquare className="w-4 h-4" />
                             <span>Inquire Now</span>
@@ -905,7 +905,7 @@ export default function RequirementPortal() {
                               setActiveTab('submit');
                               showToast('info', `Loaded "${title}" into Custom Requirement form`);
                             }}
-                            className="w-full py-1.5 text-[11px] font-bold text-zinc-600 hover:text-amber-800 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer text-center"
+                            className="w-full py-1.5 text-[11px] font-bold text-zinc-600 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer text-center"
                           >
                             Customize in Studio →
                           </button>
@@ -948,7 +948,7 @@ export default function RequirementPortal() {
                       <p><strong>Specifications / Size:</strong> {submittedInquiry.size}</p>
                       <p><strong>Quantity:</strong> {submittedInquiry.quantity} unit(s)</p>
                       <p><strong>Attached Photos:</strong> {submittedInquiry.images?.length || 0} photo(s)</p>
-                      <p><strong>Status:</strong> <span className="text-amber-700 font-bold">Pending Review</span></p>
+                      <p><strong>Status:</strong> <span className="text-blue-900 font-bold">Pending Review</span></p>
                     </div>
 
                     <div className="mt-4 flex items-center gap-3">
@@ -985,7 +985,7 @@ export default function RequirementPortal() {
                 <div className="border-b border-zinc-100 pb-3 mb-4 flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
-                      <span className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs font-black">1</span>
+                      <span className="w-7 h-7 rounded-lg bg-blue-900 text-white flex items-center justify-center text-xs font-black">1</span>
                       Select Product Category
                     </h2>
                     <p className="text-xs text-zinc-500 mt-0.5">
@@ -1018,16 +1018,16 @@ export default function RequirementPortal() {
                           showToast('info', `Switched to ${cat.label} requirements`);
                         }}
                         className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${isSelected
-                            ? 'bg-amber-50/80 border-amber-500 ring-2 ring-amber-500/30 shadow-sm'
-                            : 'bg-zinc-50/60 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100/60'
+                          ? 'bg-blue-50/80 border-blue-900 ring-2 ring-blue-900/30 shadow-sm'
+                          : 'bg-zinc-50/60 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100/60'
                           }`}
                       >
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 ${isSelected ? 'bg-amber-500 text-white' : 'bg-zinc-200 text-zinc-600'
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 ${isSelected ? 'bg-blue-900 text-white' : 'bg-zinc-200 text-zinc-600'
                           }`}>
                           <Icon className="w-5 h-5" />
                         </div>
                         <div>
-                          <h4 className={`text-xs font-bold ${isSelected ? 'text-amber-950 font-black' : 'text-zinc-800'}`}>
+                          <h4 className={`text-xs font-bold ${isSelected ? 'text-blue-950 font-black' : 'text-zinc-800'}`}>
                             {cat.label}
                           </h4>
                           <p className="text-[10px] text-zinc-500 line-clamp-1 mt-0.5 leading-tight">
@@ -1044,10 +1044,10 @@ export default function RequirementPortal() {
               <div className="border-t border-zinc-100 pt-5 space-y-5">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-700 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span className="w-2 h-2 rounded-full bg-blue-900" />
                     {currentCategoryConfig?.label} Specifications
                   </h3>
-                  <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  <span className="text-xs font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                     Category: {currentCategoryConfig?.label}
                   </span>
                 </div>
@@ -1071,7 +1071,7 @@ export default function RequirementPortal() {
                     }
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
-                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                   />
                 </div>
 
@@ -1089,7 +1089,7 @@ export default function RequirementPortal() {
                         <select
                           value={fashionGender}
                           onChange={(e) => setFashionGender(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Women's Wear">Women's Wear</option>
                           <option value="Men's Wear">Men's Wear</option>
@@ -1106,7 +1106,7 @@ export default function RequirementPortal() {
                         <select
                           value={fashionSize}
                           onChange={(e) => setFashionSize(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="XS (34 Chest)">XS (34 Chest)</option>
                           <option value="S (36 Chest)">S (36 Chest)</option>
@@ -1127,7 +1127,7 @@ export default function RequirementPortal() {
                         <select
                           value={fashionFabric}
                           onChange={(e) => setFashionFabric(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Pure Handloom Silk">Pure Handloom Silk</option>
                           <option value="Banarasi Katan Silk">Banarasi Katan Silk</option>
@@ -1151,7 +1151,7 @@ export default function RequirementPortal() {
                           placeholder="e.g. Royal Blue with Antique Gold Zari border"
                           value={fashionColorWork}
                           onChange={(e) => setFashionColorWork(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         />
                       </div>
 
@@ -1164,7 +1164,7 @@ export default function RequirementPortal() {
                           placeholder="e.g. Length 44 inch, Waist 34 inch"
                           value={fashionCustomMeasurements}
                           onChange={(e) => setFashionCustomMeasurements(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1175,7 +1175,7 @@ export default function RequirementPortal() {
                 {/* 2. DYNAMIC FIELDS FOR JEWELRY & SILVERWARE */}
                 {/* ======================================================== */}
                 {category === 'jewelry' && (
-                  <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-4 animate-fadeIn">
+                  <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-200/80 space-y-4 animate-fadeIn">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Jewelry Type */}
                       <div>
@@ -1185,7 +1185,7 @@ export default function RequirementPortal() {
                         <select
                           value={jewelryType}
                           onChange={(e) => setJewelryType(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Necklace & Choker">Necklace & Choker</option>
                           <option value="Bangles & Kadas">Bangles & Kadas</option>
@@ -1205,7 +1205,7 @@ export default function RequirementPortal() {
                         <select
                           value={metalPurity}
                           onChange={(e) => setMetalPurity(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="92.5 Sterling Silver">92.5 Sterling Silver</option>
                           <option value="22K Gold Plated Brass">22K Gold Plated Brass</option>
@@ -1223,7 +1223,7 @@ export default function RequirementPortal() {
                         <select
                           value={gemstoneType}
                           onChange={(e) => setGemstoneType(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Kundan & Polki">Kundan & Polki</option>
                           <option value="Natural Basra / Rice Pearls">Natural Pearls</option>
@@ -1242,7 +1242,7 @@ export default function RequirementPortal() {
                         <select
                           value={jewelrySize}
                           onChange={(e) => setJewelrySize(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value='Standard (16"-18" Necklace)'>Standard (16"-18" Necklace)</option>
                           <option value="Bangle 2.4 (Small)">Bangle 2.4 (Small)</option>
@@ -1262,7 +1262,7 @@ export default function RequirementPortal() {
                           placeholder="e.g. 50 grams, 120 grams"
                           value={estimatedWeight}
                           onChange={(e) => setEstimatedWeight(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1283,7 +1283,7 @@ export default function RequirementPortal() {
                         <select
                           value={craftMedium}
                           onChange={(e) => setCraftMedium(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Solid Brass & Bronze">Solid Brass & Bronze</option>
                           <option value="Hand-carved Teakwood / Sheesham">Hand-carved Teakwood / Sheesham</option>
@@ -1301,7 +1301,7 @@ export default function RequirementPortal() {
                         <select
                           value={decorFinish}
                           onChange={(e) => setDecorFinish(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
                         >
                           <option value="Antique Polish with Lacquer">Antique Polish with Lacquer</option>
                           <option value="Glossy Mirror Finish">Glossy Mirror Finish</option>
@@ -1321,7 +1321,7 @@ export default function RequirementPortal() {
                         placeholder="e.g. 14 inch diameter, 3.5 kg weight or 24 x 18 x 6 inches"
                         value={decorDimensions}
                         onChange={(e) => setDecorDimensions(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-900 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -1341,7 +1341,7 @@ export default function RequirementPortal() {
                         placeholder="e.g. A5 Notebook (8.5 x 5.5 inches), 200 GSM handmade paper"
                         value={otherSizeSpec}
                         onChange={(e) => setOtherSizeSpec(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        className="w-full px-3 py-2 bg-white border border-zinc-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-blue-900 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -1357,7 +1357,7 @@ export default function RequirementPortal() {
                     min="1"
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-                    className="w-full sm:w-48 px-4 py-2.5 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                    className="w-full sm:w-48 px-4 py-2.5 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                   />
                 </div>
 
@@ -1371,7 +1371,7 @@ export default function RequirementPortal() {
                     placeholder="Provide any custom carving details, personalized engravings, lining preferences, packaging requirements, etc."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                    className="w-full px-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                   />
                 </div>
 
@@ -1382,7 +1382,7 @@ export default function RequirementPortal() {
                       Reference Photos (Upload Multiple Photos)
                     </label>
                     {images.length > 0 && (
-                      <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                      <span className="text-xs font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                         {images.length} photo(s) selected
                       </span>
                     )}
@@ -1425,8 +1425,8 @@ export default function RequirementPortal() {
                           </div>
                         ))}
 
-                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-300 hover:border-amber-500 bg-white hover:bg-amber-50/30 flex flex-col items-center justify-center cursor-pointer transition-colors text-zinc-500 hover:text-amber-700">
-                          <Plus className="w-6 h-6 mb-1 text-amber-600" />
+                        <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-300 hover:border-blue-900 bg-white hover:bg-blue-50/30 flex flex-col items-center justify-center cursor-pointer transition-colors text-zinc-500 hover:text-blue-900">
+                          <Plus className="w-6 h-6 mb-1 text-blue-900" />
                           <span className="text-[11px] font-bold">Add More</span>
                           <input
                             type="file"
@@ -1453,8 +1453,8 @@ export default function RequirementPortal() {
 
                   {images.length === 0 && (
                     <div className="space-y-3">
-                      <label className="border-2 border-dashed border-zinc-300 hover:border-amber-500 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-zinc-50/50 hover:bg-amber-50/30">
-                        <Upload className="w-8 h-8 text-amber-600 mb-2" />
+                      <label className="border-2 border-dashed border-zinc-300 hover:border-blue-900 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-zinc-50/50 hover:bg-blue-50/30">
+                        <Upload className="w-8 h-8 text-blue-900 mb-2" />
                         <span className="text-xs font-bold text-zinc-700">
                           Click to select photos from your device
                         </span>
@@ -1478,7 +1478,7 @@ export default function RequirementPortal() {
               <div className="border-t border-zinc-100 pt-6 space-y-4">
                 <div>
                   <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-black">2</span>
+                    <span className="w-7 h-7 rounded-lg bg-blue-900 text-white flex items-center justify-center text-xs font-black">2</span>
                     Email & OTP Verification
                   </h2>
                   <p className="text-xs text-zinc-500 mt-0.5">
@@ -1499,7 +1499,7 @@ export default function RequirementPortal() {
                         placeholder="e.g. client@example.com"
                         value={userEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                       />
                     </div>
                   </div>
@@ -1515,7 +1515,7 @@ export default function RequirementPortal() {
                         placeholder="e.g. +91 98765 43210"
                         value={userPhone}
                         onChange={(e) => setUserPhone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                       />
                     </div>
                   </div>
@@ -1527,7 +1527,7 @@ export default function RequirementPortal() {
                       type="button"
                       onClick={handleSendSubmitOtp}
                       disabled={isSendingSubmitOtp || !userEmail}
-                      className="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="w-full py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSendingSubmitOtp ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1541,15 +1541,15 @@ export default function RequirementPortal() {
                     </p>
                   </div>
                 ) : (
-                  <div className="p-5 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-3 animate-fadeIn">
+                  <div className="p-5 bg-blue-50/80 border border-blue-200 rounded-2xl space-y-3 animate-fadeIn">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-900">
+                      <span className="text-xs font-bold text-blue-900">
                         Enter 6-Digit OTP sent to {userEmail}
                       </span>
                       <button
                         type="button"
                         onClick={handleSendSubmitOtp}
-                        className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                        className="text-xs font-bold text-blue-900 hover:text-blue-950 underline cursor-pointer"
                       >
                         Resend OTP
                       </button>
@@ -1561,13 +1561,13 @@ export default function RequirementPortal() {
                       placeholder="Enter 6-digit OTP"
                       value={submitOtp}
                       onChange={(e) => setSubmitOtp(e.target.value)}
-                      className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                      className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-900 focus:outline-none"
                     />
 
                     {submitDevOtp && (
-                      <div className="p-2.5 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
-                        <span className="text-xs font-semibold text-amber-900">
-                          Demo OTP Code: <strong className="font-mono text-sm tracking-wider bg-amber-200 px-2 py-0.5 rounded">{submitDevOtp}</strong> (Auto-filled)
+                      <div className="p-2.5 bg-blue-100/80 border border-blue-300 rounded-xl text-center">
+                        <span className="text-xs font-semibold text-blue-900">
+                          Demo OTP Code: <strong className="font-mono text-sm tracking-wider bg-blue-200 px-2 py-0.5 rounded">{submitDevOtp}</strong> (Auto-filled)
                         </span>
                       </div>
                     )}
@@ -1575,7 +1575,7 @@ export default function RequirementPortal() {
                     <button
                       type="submit"
                       disabled={isSubmittingInquiry || !submitOtp}
-                      className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="w-full py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSubmittingInquiry ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1599,7 +1599,7 @@ export default function RequirementPortal() {
             {!isTrackVerified ? (
               <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xl shadow-zinc-200/50 space-y-6">
                 <div className="text-center max-w-md mx-auto">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-900 flex items-center justify-center mx-auto mb-3">
                     <Lock className="w-6 h-6" />
                   </div>
                   <h2 className="text-xl font-bold text-zinc-900">Track Your Requirement Status</h2>
@@ -1620,7 +1620,7 @@ export default function RequirementPortal() {
                         placeholder="e.g. client@example.com"
                         value={trackEmail}
                         onChange={(e) => setTrackEmail(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900"
                       />
                     </div>
                   </div>
@@ -1630,7 +1630,7 @@ export default function RequirementPortal() {
                       type="button"
                       onClick={handleSendTrackOtp}
                       disabled={isSendingTrackOtp || !trackEmail}
-                      className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="w-full py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSendingTrackOtp ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1640,13 +1640,13 @@ export default function RequirementPortal() {
                       <span>Send Verification Code</span>
                     </button>
                   ) : (
-                    <div className="space-y-3 p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl animate-fadeIn">
+                    <div className="space-y-3 p-4 bg-blue-50/70 border border-blue-200 rounded-2xl animate-fadeIn">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-indigo-900">Enter OTP Code</span>
+                        <span className="text-xs font-bold text-blue-900">Enter OTP Code</span>
                         <button
                           type="button"
                           onClick={handleSendTrackOtp}
-                          className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                          className="text-xs font-bold text-blue-900 hover:text-blue-950 underline cursor-pointer"
                         >
                           Resend Code
                         </button>
@@ -1658,13 +1658,13 @@ export default function RequirementPortal() {
                         placeholder="Enter 6-digit code"
                         value={trackOtp}
                         onChange={(e) => setTrackOtp(e.target.value)}
-                        className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        className="w-full py-3 px-4 text-center tracking-widest text-lg font-mono font-bold bg-white border border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-900 focus:outline-none"
                       />
 
                       {trackDevOtp && (
-                        <div className="p-2.5 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
-                          <span className="text-xs font-semibold text-amber-900">
-                            Demo Code: <strong className="font-mono text-sm tracking-wider bg-amber-200 px-2 py-0.5 rounded">{trackDevOtp}</strong> (Auto-filled)
+                        <div className="p-2.5 bg-blue-100/80 border border-blue-300 rounded-xl text-center">
+                          <span className="text-xs font-semibold text-blue-900">
+                            Demo Code: <strong className="font-mono text-sm tracking-wider bg-blue-200 px-2 py-0.5 rounded">{trackDevOtp}</strong> (Auto-filled)
                           </span>
                         </div>
                       )}
@@ -1673,7 +1673,7 @@ export default function RequirementPortal() {
                         type="button"
                         onClick={handleVerifyAndFetchInquiries}
                         disabled={isVerifyingTrack || !trackOtp}
-                        className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        className="w-full py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {isVerifyingTrack ? (
                           <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1693,7 +1693,7 @@ export default function RequirementPortal() {
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                       <h3 className="text-sm font-bold text-zinc-900">
-                        Inquiries for <span className="text-indigo-600">{trackEmail}</span>
+                        Inquiries for <span className="text-blue-900">{trackEmail}</span>
                       </h3>
                     </div>
                     <p className="text-xs text-zinc-400 mt-0.5">Showing {myInquiries.length} submitted requirement(s)</p>
@@ -1703,10 +1703,10 @@ export default function RequirementPortal() {
                     <button
                       onClick={() => handleRefreshMyInquiries(false)}
                       disabled={isRefreshingInquiries}
-                      className="px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                      className="px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
                       title="Refresh messages and status"
                     >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-indigo-600' : ''}`} />
+                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-blue-900' : ''}`} />
                       <span>Refresh Messages</span>
                     </button>
                     <button
@@ -1731,7 +1731,7 @@ export default function RequirementPortal() {
                     </p>
                     <button
                       onClick={() => setActiveTab('submit')}
-                      className="mt-4 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
+                      className="mt-4 px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold rounded-xl shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
                     >
                       <FilePlus className="w-4 h-4" />
                       <span>Submit Your First Requirement</span>
@@ -1750,7 +1750,7 @@ export default function RequirementPortal() {
                       >
                         <div className="p-4 bg-zinc-50/80 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">
+                            <span className="font-mono text-xs font-black text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
                               #{inq.inquiryNumber}
                             </span>
                             {getCategoryBadge(inq.category)}
@@ -1809,14 +1809,14 @@ export default function RequirementPortal() {
                             <div className="flex-1 min-w-0">
                               <h4 className="text-lg font-bold text-zinc-900">{inq.name}</h4>
                               <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                                <span className="bg-amber-50 text-amber-900 font-semibold px-2.5 py-1 rounded-lg border border-amber-200">
+                                <span className="bg-blue-50 text-blue-900 font-semibold px-2.5 py-1 rounded-lg border border-blue-200">
                                   Specifications: {inq.size}
                                 </span>
                                 <span className="bg-zinc-100 text-zinc-700 font-semibold px-2.5 py-1 rounded-lg">
                                   Qty: {inq.quantity || 1} units
                                 </span>
                                 {allImages.length > 1 && (
-                                  <span className="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-lg border border-indigo-100">
+                                  <span className="bg-blue-50 text-blue-900 font-semibold px-2.5 py-1 rounded-lg border border-blue-200">
                                     {allImages.length} Photos Attached
                                   </span>
                                 )}
@@ -1848,16 +1848,16 @@ export default function RequirementPortal() {
                               </div>
                             </div>
                           ) : (
-                            <div className="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center gap-2 text-xs text-amber-800">
-                              <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                            <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex items-center gap-2 text-xs text-blue-900">
+                              <Clock className="w-4 h-4 text-blue-800 shrink-0" />
                               <span>Quotation is being prepared by our master artisans and pricing team.</span>
                             </div>
                           )}
 
                           {inq.adminNotes && (
-                            <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 mb-1">
-                                <MessageSquare className="w-3.5 h-3.5 text-indigo-600" />
+                            <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 mb-1">
+                                <MessageSquare className="w-3.5 h-3.5 text-blue-900" />
                                 <span>Note from Amba Lifestyle Admin:</span>
                               </div>
                               <p className="text-xs text-zinc-700 leading-relaxed italic">
@@ -1870,7 +1870,7 @@ export default function RequirementPortal() {
                           <div className="p-4 bg-zinc-50/90 border border-zinc-200 rounded-2xl space-y-3">
                             <div className="flex items-center justify-between border-b border-zinc-200/80 pb-2.5">
                               <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-900 flex items-center justify-center">
                                   <MessageSquare className="w-4 h-4" />
                                 </div>
                                 <div>
@@ -1883,12 +1883,12 @@ export default function RequirementPortal() {
                                   type="button"
                                   onClick={() => handleRefreshMyInquiries(false)}
                                   disabled={isRefreshingInquiries}
-                                  className="p-1 text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                                  className="p-1 text-zinc-400 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                                   title="Refresh live messages"
                                 >
-                                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-indigo-600' : ''}`} />
+                                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-blue-900' : ''}`} />
                                 </button>
-                                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                                <span className="text-[10px] font-bold text-blue-900 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
                                   {inq.messages && inq.messages.length > 0 ? `${inq.messages.length} Message${inq.messages.length > 1 ? 's' : ''}` : 'No messages yet'}
                                 </span>
                               </div>
@@ -1905,7 +1905,7 @@ export default function RequirementPortal() {
                                       className={`flex flex-col ${isCustomer ? 'items-end' : 'items-start'}`}
                                     >
                                       <div className="flex items-center gap-1.5 mb-1 px-1 text-[10px]">
-                                        <span className={`font-bold ${isCustomer ? 'text-indigo-600' : 'text-emerald-700'}`}>
+                                        <span className={`font-bold ${isCustomer ? 'text-blue-900' : 'text-emerald-700'}`}>
                                           {isCustomer ? 'You (Customer)' : 'Amba Lifestyle Support Admin'}
                                         </span>
                                         <span className="text-zinc-400">
@@ -1913,11 +1913,10 @@ export default function RequirementPortal() {
                                         </span>
                                       </div>
                                       <div
-                                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-medium leading-relaxed shadow-2xs ${
-                                          isCustomer
-                                            ? 'bg-indigo-600 text-white rounded-br-xs'
+                                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-medium leading-relaxed shadow-2xs ${isCustomer
+                                            ? 'bg-blue-900 text-white rounded-br-xs'
                                             : 'bg-white text-zinc-800 border border-zinc-200/90 rounded-bl-xs'
-                                        }`}
+                                          }`}
                                       >
                                         <p className="whitespace-pre-wrap">{msg.message}</p>
                                       </div>
@@ -1956,13 +1955,13 @@ export default function RequirementPortal() {
                                     handleSendMessage(inq);
                                   }
                                 }}
-                                className="flex-1 px-3.5 py-2 text-xs bg-white border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-zinc-800 placeholder:text-zinc-400"
+                                className="flex-1 px-3.5 py-2 text-xs bg-white border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium text-zinc-800 placeholder:text-zinc-400"
                               />
                               <button
                                 type="button"
                                 onClick={() => handleSendMessage(inq)}
                                 disabled={sendingMessageIds[inq.inquiryNumber || inq._id] || !(messageInputs[inq.inquiryNumber || inq._id] || '').trim()}
-                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
+                                className="px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
                               >
                                 {sendingMessageIds[inq.inquiryNumber || inq._id] ? (
                                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2031,7 +2030,7 @@ export default function RequirementPortal() {
           >
             <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
               <h3 className="text-base font-bold text-zinc-900 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-amber-600" />
+                <MessageSquare className="w-4 h-4 text-blue-900" />
                 <span>Product Inquiry</span>
               </h3>
               <button
@@ -2079,7 +2078,7 @@ export default function RequirementPortal() {
                       setInquireCustomerEmail(e.target.value);
                       if (inquireOtpSent) setInquireOtpSent(false);
                     }}
-                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium"
                   />
                 </div>
               </div>
@@ -2095,7 +2094,7 @@ export default function RequirementPortal() {
                     placeholder="e.g. +91 98765 43210"
                     value={inquireCustomerPhone}
                     onChange={(e) => setInquireCustomerPhone(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium"
                   />
                 </div>
               </div>
@@ -2109,7 +2108,7 @@ export default function RequirementPortal() {
                   value={inquireCustomerMessage}
                   onChange={(e) => setInquireCustomerMessage(e.target.value)}
                   placeholder="Ask about availability, delivery time, or custom variations..."
-                  className="w-full p-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                  className="w-full p-2.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium"
                 />
               </div>
 
@@ -2128,7 +2127,7 @@ export default function RequirementPortal() {
                       type="button"
                       onClick={handleSendInquireOtp}
                       disabled={isSendingInquireOtp || !inquireCustomerEmail || !inquireCustomerEmail.includes('@')}
-                      className="px-5 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSendingInquireOtp ? (
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -2143,15 +2142,15 @@ export default function RequirementPortal() {
                   </p>
                 </div>
               ) : (
-                <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-3 animate-fadeIn">
+                <div className="p-4 bg-blue-50/80 border border-blue-200 rounded-2xl space-y-3 animate-fadeIn">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-indigo-900">
+                    <span className="text-xs font-bold text-blue-900">
                       Enter OTP Code sent to {inquireCustomerEmail}
                     </span>
                     <button
                       type="button"
                       onClick={handleSendInquireOtp}
-                      className="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                      className="text-xs font-bold text-blue-900 hover:text-blue-950 underline cursor-pointer"
                     >
                       Resend Code
                     </button>
@@ -2163,13 +2162,13 @@ export default function RequirementPortal() {
                     placeholder="Enter 6-digit code"
                     value={inquireOtp}
                     onChange={(e) => setInquireOtp(e.target.value)}
-                    className="w-full py-2.5 px-4 text-center tracking-widest text-base font-mono font-bold bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    className="w-full py-2.5 px-4 text-center tracking-widest text-base font-mono font-bold bg-white border border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-900 focus:outline-none"
                   />
 
                   {inquireDevOtp && (
-                    <div className="p-2 bg-amber-100/80 border border-amber-300 rounded-xl text-center">
-                      <span className="text-xs font-semibold text-amber-900">
-                        Demo Code: <strong className="font-mono text-xs tracking-wider bg-amber-200 px-1.5 py-0.5 rounded">{inquireDevOtp}</strong> (Auto-filled)
+                    <div className="p-2 bg-blue-100/80 border border-blue-300 rounded-xl text-center">
+                      <span className="text-xs font-semibold text-blue-900">
+                        Demo Code: <strong className="font-mono text-xs tracking-wider bg-blue-200 px-1.5 py-0.5 rounded">{inquireDevOtp}</strong> (Auto-filled)
                       </span>
                     </div>
                   )}
@@ -2185,7 +2184,7 @@ export default function RequirementPortal() {
                     <button
                       type="submit"
                       disabled={isSubmittingProductInquiry || !inquireOtp}
-                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {isSubmittingProductInquiry ? (
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />

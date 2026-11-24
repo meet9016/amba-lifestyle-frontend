@@ -15,7 +15,7 @@ export const Badge: React.FC<BadgeProps> = ({
     default: 'bg-zinc-100 text-zinc-800 border border-zinc-200/60',
     sale: 'bg-rose-500 text-white font-semibold',
     new: 'bg-emerald-600 text-white font-semibold',
-    popular: 'bg-amber-600 text-white font-semibold'
+    popular: 'bg-blue-900 text-white font-semibold'
   };
 
   return (

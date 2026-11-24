@@ -135,7 +135,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="mt-2 text-xs font-semibold text-amber-700 hover:text-amber-800 underline cursor-pointer"
+              className="mt-2 text-xs font-semibold text-blue-900 hover:text-blue-950 underline cursor-pointer"
             >
               Replace Photo
             </button>
@@ -157,18 +157,18 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center gap-2 ${
             isDragging
-              ? 'border-amber-600 bg-amber-50/50'
+              ? 'border-blue-900 bg-blue-50/50'
               : activeError
               ? 'border-rose-300 bg-rose-50/30'
-              : 'border-stone-300 hover:border-amber-600 bg-stone-50/60 hover:bg-amber-50/20'
+              : 'border-stone-300 hover:border-blue-900 bg-stone-50/60 hover:bg-blue-50/20'
           }`}
         >
-          <div className="w-10 h-10 rounded-xl bg-amber-100/70 text-amber-800 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center">
             <UploadCloud className="w-5 h-5" />
           </div>
           <div>
             <p className="text-xs font-semibold text-zinc-800">
-              <span className="text-amber-700 hover:underline">Click to upload</span> or drag and drop
+              <span className="text-blue-900 hover:underline">Click to upload</span> or drag and drop
             </p>
             <p className="text-[10px] text-zinc-400 mt-0.5">PNG, JPG, WEBP up to 8MB</p>
           </div>

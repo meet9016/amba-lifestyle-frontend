@@ -283,8 +283,8 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-12">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-4 border-amber-200"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-amber-700 border-t-transparent animate-spin"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-blue-900 border-t-transparent animate-spin"></div>
           </div>
           <p className="mt-5 text-sm font-serif font-semibold text-zinc-800">
             Fetching authentic artisan masterpiece...
@@ -301,7 +301,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       <div className="min-h-screen bg-stone-50 flex flex-col">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4 shadow-xs">
+          <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-900 flex items-center justify-center mb-4 shadow-xs">
             <Package className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-serif font-bold text-zinc-900">Artisan Creation Unavailable</h1>
@@ -310,7 +310,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
           </p>
           <Link
             href="/"
-            className="mt-6 px-6 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold shadow-md transition-all"
+            className="mt-6 px-6 py-3 rounded-xl bg-blue-900 hover:bg-blue-950 text-white text-xs font-semibold shadow-md transition-all"
           >
             Explore Live Catalog
           </Link>
@@ -475,16 +475,16 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
       {/* Floating Add to Cart Success Notification */}
       {cartSuccessAlert && (
-        <div className="fixed top-20 right-4 sm:right-8 z-50 bg-stone-900 text-white p-4 sm:p-5 rounded-2xl shadow-2xl flex items-center gap-4 transition-all duration-300 border border-amber-600/30 max-w-md animate-in slide-in-from-top-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0">
+        <div className="fixed top-20 right-4 sm:right-8 z-50 bg-stone-900 text-white p-4 sm:p-5 rounded-2xl shadow-2xl flex items-center gap-4 transition-all duration-300 border border-blue-800/40 max-w-md animate-in slide-in-from-top-4">
+          <div className="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-amber-400 uppercase tracking-wider">Added to Shopping Bag</p>
+            <p className="text-xs font-bold text-blue-300 uppercase tracking-wider">Added to Shopping Bag</p>
             <p className="text-sm font-semibold text-white truncate mt-0.5">{product.title}</p>
             <p className="text-xs text-zinc-300 mt-0.5">
               Qty: <span className="font-bold text-white">{quantity}</span> &bull; Subtotal:{' '}
-              <span className="font-bold text-amber-300">₹{totalPrice.toLocaleString()}</span>
+              <span className="font-bold text-white">₹{totalPrice.toLocaleString()}</span>
             </p>
           </div>
           <button
@@ -500,7 +500,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       {authRequiredAlert && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-zinc-200 text-center space-y-4">
-            <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-800 flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center mx-auto">
               <ShoppingBag className="w-7 h-7" />
             </div>
             <div>
@@ -512,7 +512,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
               <Link
                 href={`/login?redirect=/product/${product?.id || ''}`}
-                className="flex-1 py-3 px-4 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs transition-colors text-center"
+                className="flex-1 py-3 px-4 rounded-xl bg-blue-900 hover:bg-blue-950 text-white font-semibold text-xs transition-colors text-center"
               >
                 Sign In to Account
               </Link>
@@ -540,7 +540,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block">Amba B2B Direct Sourcing</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-900 block">Amba B2B Direct Sourcing</span>
                 <h3 className="text-base font-serif font-bold text-zinc-900 mt-0.5">Submit Bulk Production Order</h3>
               </div>
               <button
@@ -617,7 +617,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                     <p className="text-[11px] text-zinc-500 font-semibold mt-0.5">
                       Batch: <strong className="text-zinc-900">{quantity} units</strong> @ ₹{currentUnitPrice} / piece
                     </p>
-                    <p className="text-xs font-bold text-amber-900 mt-0.5">
+                    <p className="text-xs font-bold text-blue-900 mt-0.5">
                       Total: ₹{totalPrice.toLocaleString('en-IN')}
                     </p>
                   </div>
@@ -633,7 +633,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                     placeholder="Describe custom border colorways, monogramming, specific fabric density, packaging needs, or delivery deadlines..."
                     value={customNotes}
                     onChange={(e) => setCustomNotes(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800 placeholder-zinc-400"
+                    className="w-full px-3.5 py-2.5 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 placeholder-zinc-400"
                   />
                 </div>
 
@@ -647,7 +647,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                     multiple
                     accept="image/*"
                     onChange={handleRefImageUpload}
-                    className="w-full text-xs text-zinc-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
+                    className="w-full text-xs text-zinc-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-900 hover:file:bg-blue-100 cursor-pointer"
                   />
                   {referenceImages.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -676,7 +676,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       placeholder="e.g. Sanya Kapoor"
                       value={buyerName}
                       onChange={(e) => setBuyerName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"
+                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     />
                   </div>
                   <div>
@@ -686,7 +686,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       placeholder="e.g. Royal Heritage Boutiques"
                       value={buyerCompany}
                       onChange={(e) => setBuyerCompany(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"
+                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     />
                   </div>
                 </div>
@@ -699,7 +699,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       placeholder="+91 98765 43210"
                       value={buyerPhone}
                       onChange={(e) => setBuyerPhone(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"
+                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     />
                   </div>
                   <div>
@@ -709,14 +709,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       placeholder="buyer@enterprise.in"
                       value={buyerEmail}
                       onChange={(e) => setBuyerEmail(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"
+                      className="w-full px-3 py-2 text-xs bg-white text-zinc-900 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     />
                   </div>
                 </div>
 
-                <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl text-[11px] text-amber-900 space-y-1">
+                <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-2xl text-[11px] text-blue-900 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold">
-                    <ShieldCheck className="w-4 h-4 text-amber-800" />
+                    <ShieldCheck className="w-4 h-4 text-blue-900" />
                     <span>Direct B2B Workflow Notice</span>
                   </div>
                   <p className="text-stone-700">
@@ -736,7 +736,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   <button
                     type="submit"
                     disabled={isSubmittingOrder}
-                    className="px-6 py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs shadow-md shadow-amber-800/20 disabled:opacity-50"
+                    className="px-6 py-2.5 rounded-xl bg-blue-900 hover:bg-blue-950 text-white font-semibold text-xs shadow-md shadow-blue-900/20 disabled:opacity-50"
                   >
                     {isSubmittingOrder ? 'Submitting Order...' : 'Confirm & Place Bulk Order'}
                   </button>
@@ -827,11 +827,11 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
       <div className="bg-white border-b border-zinc-200/80 py-3 sticky top-16 z-20 backdrop-blur-md bg-white/95">
         <div className="w-full px-4 sm:px-8 lg:px-12">
           <nav className="flex items-center gap-2 text-xs text-zinc-500 overflow-x-auto">
-            <Link href="/" className="hover:text-amber-800 transition-colors flex items-center gap-1">
+            <Link href="/" className="hover:text-blue-900 transition-colors flex items-center gap-1">
               <span>Home</span>
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-            <Link href="/" className="hover:text-amber-800 transition-colors">
+            <Link href="/" className="hover:text-blue-900 transition-colors">
               {product.category}
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
@@ -857,13 +857,13 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
                   className={`relative w-20 h-24 md:w-24 md:h-28 rounded-2xl overflow-hidden border-2 shrink-0 transition-all duration-200 bg-white shadow-xs ${activeImageIndex === idx
-                      ? 'border-amber-700 ring-4 ring-amber-100 scale-102'
+                      ? 'border-blue-900 ring-4 ring-blue-100 scale-102'
                       : 'border-zinc-200 opacity-70 hover:opacity-100 hover:border-zinc-300'
                     }`}
                 >
                   <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
                   {activeImageIndex === idx && (
-                    <div className="absolute inset-x-0 bottom-0 h-1 bg-amber-700"></div>
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-blue-900"></div>
                   )}
                 </button>
               ))}
@@ -880,8 +880,8 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
               {/* Luxury Artisan Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-800 text-amber-50 text-[11px] font-bold rounded-full shadow-lg tracking-wider uppercase backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-900 text-white text-[11px] font-bold rounded-full shadow-lg tracking-wider uppercase backdrop-blur-md">
+                  <Sparkles className="w-3.5 h-3.5 text-white" />
                   Authentic Artisan Handcrafted
                 </span>
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/95 text-zinc-800 text-[11px] font-semibold rounded-full shadow-md border border-zinc-200">
@@ -905,7 +905,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
                 <button
                   onClick={() => setIsLightboxOpen(true)}
-                  className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-md text-zinc-700 hover:text-amber-800 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
+                  className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-md text-zinc-700 hover:text-blue-900 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
                   title="Zoom Image"
                 >
                   <ZoomIn className="w-5 h-5" />
@@ -918,7 +918,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       alert('Product link copied to clipboard!');
                     }
                   }}
-                  className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-md text-zinc-700 hover:text-amber-800 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
+                  className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-md text-zinc-700 hover:text-blue-900 hover:bg-white flex items-center justify-center shadow-lg transition-colors"
                   title="Share Piece"
                 >
                   <Share2 className="w-4 h-4" />
@@ -942,8 +942,8 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {/* Atelier & Title */}
             <div className="space-y-3 pb-6 border-b border-zinc-200">
               <div className="flex items-center justify-between">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100/80 text-amber-900 text-xs font-bold tracking-wider uppercase">
-                  <Award className="w-3.5 h-3.5 text-amber-700" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-100/80 text-blue-900 text-xs font-bold tracking-wider uppercase">
+                  <Award className="w-3.5 h-3.5 text-blue-900" />
                   <span>Amba Atelier &bull; {product.category}</span>
                 </div>
                 <span className="text-xs font-mono font-medium text-zinc-400">SKU: AMB-{product.id.slice(-6)}</span>
@@ -955,14 +955,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
 
               {/* Rating & Orders Bar */}
               <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-900 font-bold border border-amber-500/20">
+                <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 font-bold border border-blue-200">
                   <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
                   <span>{product.rating}</span>
                 </div>
                 <a
                   href="#reviews"
                   onClick={() => setActiveTab('reviews')}
-                  className="font-semibold text-amber-800 hover:underline"
+                  className="font-semibold text-blue-900 hover:underline"
                 >
                   {product.reviewsCount} Verified Customer Reviews
                 </a>
@@ -976,7 +976,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {/* PRICING BLOCK */}
             <div className="bg-stone-50 rounded-3xl p-5 border border-zinc-200/80 space-y-4">
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-3xl sm:text-4xl font-serif font-black text-amber-950">
+                <span className="text-3xl sm:text-4xl font-serif font-black text-blue-950">
                   ₹{currentUnitPrice.toLocaleString()}
                 </span>
                 {product.discountPrice && (
@@ -998,10 +998,10 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                 <div className="pt-3 border-t border-zinc-200 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-zinc-800 flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5 text-amber-700" />
+                      <Layers className="w-3.5 h-3.5 text-blue-900" />
                       Wholesale & Boutique Tier Pricing
                     </span>
-                    <span className="text-[11px] text-amber-800 font-semibold">Automatic Volume Discounts</span>
+                    <span className="text-[11px] text-blue-900 font-semibold">Automatic Volume Discounts</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2.5">
                     {product.tierPricing.map((tier, idx) => {
@@ -1011,14 +1011,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                         <div
                           key={idx}
                           className={`p-3 rounded-2xl border text-center transition-all ${isActive
-                              ? 'bg-amber-100/70 border-amber-600 ring-2 ring-amber-500/20'
+                              ? 'bg-blue-100/70 border-blue-900 ring-2 ring-blue-900/20'
                               : 'bg-white border-zinc-200'
                             }`}
                         >
                           <p className="text-[11px] font-semibold text-zinc-500">
                             {tier.maxQty ? `${tier.minQty} - ${tier.maxQty} Pieces` : `≥ ${tier.minQty} Pieces (Bulk)`}
                           </p>
-                          <p className="text-base font-extrabold text-amber-950 mt-0.5">
+                          <p className="text-base font-extrabold text-blue-950 mt-0.5">
                             ₹{tier.price.toLocaleString()}
                             <span className="text-[10px] text-zinc-500 font-normal"> / pc</span>
                           </p>
@@ -1036,7 +1036,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-zinc-900">
                     Heritage Shade:{' '}
-                    <span className="text-amber-800 font-bold">{selectedColor || product.colors[0]?.name}</span>
+                    <span className="text-blue-900 font-bold">{selectedColor || product.colors[0]?.name}</span>
                   </span>
                   <span className="text-zinc-400">{product.colors.length} Hand-dyed shades</span>
                 </div>
@@ -1046,7 +1046,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                       key={c.name}
                       onClick={() => setSelectedColor(c.name)}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-medium transition-all ${selectedColor === c.name
-                          ? 'border-amber-800 bg-amber-50/50 ring-2 ring-amber-700/20 font-bold shadow-xs'
+                          ? 'border-blue-900 bg-blue-50/50 ring-2 ring-blue-900/20 font-bold shadow-xs'
                           : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
                         }`}
                     >
@@ -1067,11 +1067,11 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-zinc-900">
                     Sizing & Drapes:{' '}
-                    <span className="text-amber-800 font-bold">{selectedSize || product.sizes[0]}</span>
+                    <span className="text-blue-900 font-bold">{selectedSize || product.sizes[0]}</span>
                   </span>
                   <button
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-amber-800 hover:underline font-semibold flex items-center gap-1"
+                    className="text-blue-900 hover:underline font-semibold flex items-center gap-1"
                   >
                     <HelpCircle className="w-3.5 h-3.5" /> Size Guide
                   </button>
@@ -1137,7 +1137,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   )}
                 </div>
                 <div className="text-right">
-                  <span className="text-2xl font-black text-amber-950">₹{totalPrice.toLocaleString()}</span>
+                  <span className="text-2xl font-black text-blue-950">₹{totalPrice.toLocaleString()}</span>
                   <p className="text-[10px] text-zinc-400">
                     (₹{currentUnitPrice.toLocaleString()} per piece)
                   </p>
@@ -1148,9 +1148,9 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
               <div className="space-y-3 pt-2">
                 <button
                   onClick={handleInitiateBulkOrder}
-                  className="w-full py-4 px-6 bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white font-bold rounded-2xl shadow-xl shadow-amber-800/20 transition-all flex items-center justify-center gap-2.5 text-sm transform hover:-translate-y-0.5 cursor-pointer"
+                  className="w-full py-4 px-6 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-2xl shadow-xl shadow-blue-900/20 transition-all flex items-center justify-center gap-2.5 text-sm transform hover:-translate-y-0.5 cursor-pointer"
                 >
-                  <Zap className="w-4 h-4 fill-amber-300 text-amber-300" />
+                  <Zap className="w-4 h-4 fill-white text-white" />
                   <span>Place Bulk Order / Request Production</span>
                 </button>
 
@@ -1180,7 +1180,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {/* PINCODE DELIVERY CHECKER */}
             <div className="bg-white rounded-3xl p-5 border border-zinc-200 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-900">
-                <MapPin className="w-4 h-4 text-amber-700" />
+                <MapPin className="w-4 h-4 text-blue-900" />
                 <span>Delivery & Estimated Arrival</span>
               </div>
 
@@ -1191,7 +1191,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   placeholder="Enter 6-digit Pincode"
                   value={pincode}
                   onChange={(e) => setPincode(e.target.value)}
-                  className="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-amber-700/20 bg-stone-50/50"
+                  className="flex-1 px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-900/20 bg-stone-50/50"
                 />
                 <button
                   type="submit"
@@ -1236,14 +1236,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                 </div>
               </div>
               <div className="p-3.5 rounded-2xl bg-white border border-zinc-200/90 flex items-center gap-3">
-                <Truck className="w-5 h-5 text-amber-700 shrink-0" />
+                <Truck className="w-5 h-5 text-blue-900 shrink-0" />
                 <div>
                   <p className="font-bold text-zinc-900">Insured Transit</p>
                   <p className="text-[10px] text-zinc-400">All India secure transit</p>
                 </div>
               </div>
               <div className="p-3.5 rounded-2xl bg-white border border-zinc-200/90 flex items-center gap-3">
-                <Award className="w-5 h-5 text-amber-600 shrink-0" />
+                <Award className="w-5 h-5 text-blue-900 shrink-0" />
                 <div>
                   <p className="font-bold text-zinc-900">Fair Trade</p>
                   <p className="text-[10px] text-zinc-400">Empowering artisans</p>
@@ -1262,7 +1262,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             <button
               onClick={() => setActiveTab('specs')}
               className={`px-6 sm:px-8 py-4 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${activeTab === 'specs'
-                  ? 'border-amber-800 text-amber-900 bg-white shadow-xs'
+                  ? 'border-blue-900 text-blue-900 bg-white shadow-xs'
                   : 'border-transparent text-zinc-500 hover:text-zinc-900'
                 }`}
             >
@@ -1271,7 +1271,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             <button
               onClick={() => setActiveTab('artisan')}
               className={`px-6 sm:px-8 py-4 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${activeTab === 'artisan'
-                  ? 'border-amber-800 text-amber-900 bg-white shadow-xs'
+                  ? 'border-blue-900 text-blue-900 bg-white shadow-xs'
                   : 'border-transparent text-zinc-500 hover:text-zinc-900'
                 }`}
             >
@@ -1281,7 +1281,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
               id="reviews"
               onClick={() => setActiveTab('reviews')}
               className={`px-6 sm:px-8 py-4 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${activeTab === 'reviews'
-                  ? 'border-amber-800 text-amber-900 bg-white shadow-xs'
+                  ? 'border-blue-900 text-blue-900 bg-white shadow-xs'
                   : 'border-transparent text-zinc-500 hover:text-zinc-900'
                 }`}
             >
@@ -1290,7 +1290,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             <button
               onClick={() => setActiveTab('shipping')}
               className={`px-6 sm:px-8 py-4 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${activeTab === 'shipping'
-                  ? 'border-amber-800 text-amber-900 bg-white shadow-xs'
+                  ? 'border-blue-900 text-blue-900 bg-white shadow-xs'
                   : 'border-transparent text-zinc-500 hover:text-zinc-900'
                 }`}
             >
@@ -1352,7 +1352,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
               <div className="space-y-8">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 sm:p-8 bg-stone-50 rounded-3xl border border-zinc-200">
                   <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-2xl bg-amber-800 text-amber-100 flex items-center justify-center font-serif font-bold text-2xl shadow-md">
+                    <div className="w-16 h-16 rounded-2xl bg-blue-900 text-white flex items-center justify-center font-serif font-bold text-2xl shadow-md">
                       {product.supplier.name.charAt(0)}
                     </div>
                     <div>
@@ -1433,7 +1433,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
                   <div className="p-6 rounded-2xl border border-zinc-200 bg-stone-50/30 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs">
+                        <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs">
                           PS
                         </div>
                         <div>
@@ -1522,7 +1522,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
         {/* ========================================================= */}
         <div className="bg-white rounded-3xl border border-zinc-200 p-6 sm:p-10 space-y-6">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800">Help & FAQs</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Help & FAQs</span>
             <h2 className="text-2xl font-serif font-bold text-zinc-900 mt-1">Frequently Asked Questions</h2>
           </div>
 
@@ -1531,11 +1531,11 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
               <div key={idx} className="py-4">
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
-                  className="w-full flex items-center justify-between text-left text-sm font-bold text-zinc-900 hover:text-amber-800 transition-colors"
+                  className="w-full flex items-center justify-between text-left text-sm font-bold text-zinc-900 hover:text-blue-900 transition-colors"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-zinc-400 transition-transform ${openFaqIndex === idx ? 'rotate-180 text-amber-800' : ''
+                    className={`w-4 h-4 text-zinc-400 transition-transform ${openFaqIndex === idx ? 'rotate-180 text-blue-900' : ''
                       }`}
                   />
                 </button>
@@ -1553,14 +1553,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
         <div className="space-y-6 pt-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-800">
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-900">
                 Curated Recommendations
               </p>
               <h2 className="text-2xl font-serif font-bold text-zinc-900 mt-0.5">
                 More Handcrafted Masterpieces
               </h2>
             </div>
-            <Link href="/" className="text-xs font-bold text-amber-800 hover:underline">
+            <Link href="/" className="text-xs font-bold text-blue-900 hover:underline">
               View Entire Store Catalog &rarr;
             </Link>
           </div>

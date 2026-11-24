@@ -235,7 +235,7 @@ export default function AddProductPage() {
       <div className="bg-white border-b border-stone-200/80 py-3.5">
         <div className="w-full px-4 sm:px-8 lg:px-12">
           <nav className="flex items-center gap-2 text-xs text-zinc-500">
-            <Link href="/" className="hover:text-amber-800 transition-colors">
+            <Link href="/" className="hover:text-blue-900 transition-colors">
               Home
             </Link>
             <ChevronRight className="w-3 h-3 text-zinc-400" />
@@ -249,8 +249,8 @@ export default function AddProductPage() {
       <main className="w-full px-4 sm:px-8 lg:px-12 py-10 flex-1">
         {/* Page Hero Header */}
         <div className="w-full mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 text-amber-900 text-xs font-semibold uppercase tracking-wider mb-3 border border-amber-200/70">
-            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 text-blue-900 text-xs font-semibold uppercase tracking-wider mb-3 border border-blue-200/70">
+            <Sparkles className="w-3.5 h-3.5 text-blue-900" />
             <span>Artisan Storefront Onboarding</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl font-serif">
@@ -277,7 +277,7 @@ export default function AddProductPage() {
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 onClick={resetForm}
-                className="w-full sm:w-auto bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-6 py-2.5 text-xs font-semibold shadow-xs"
+                className="w-full sm:w-auto bg-blue-900 hover:bg-blue-950 text-white rounded-xl px-6 py-2.5 text-xs font-semibold shadow-xs"
               >
                 Submit Another Product
               </Button>
@@ -305,7 +305,7 @@ export default function AddProductPage() {
                 {/* Section 1: Classification */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
-                    <Layers className="w-4 h-4 text-amber-700" />
+                    <Layers className="w-4 h-4 text-blue-900" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-700">
                       1. Craft Classification
                     </h2>
@@ -325,7 +325,7 @@ export default function AddProductPage() {
                             ]
                           : [{ value: '', label: 'Loading categories...' }]
                       }
-                      focusRingColor="focus:ring-amber-600"
+                      focusRingColor="focus:ring-blue-900"
                       error={formErrors.category}
                     />
 
@@ -345,7 +345,7 @@ export default function AddProductPage() {
                           : [{ value: '', label: 'No Subcategories under this Category' }]
                       }
                       disabled={!formData.category || availableSubcategories.length === 0}
-                      focusRingColor="focus:ring-amber-600"
+                      focusRingColor="focus:ring-blue-900"
                       error={formErrors.subCategory}
                     />
                   </div>
@@ -354,7 +354,7 @@ export default function AddProductPage() {
                 {/* Section 2: Product & Workshop Details */}
                 <div className="space-y-4 pt-2">
                   <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
-                    <Store className="w-4 h-4 text-amber-700" />
+                    <Store className="w-4 h-4 text-blue-900" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-700">
                       2. Product & Artisan Details
                     </h2>
@@ -388,7 +388,7 @@ export default function AddProductPage() {
                       placeholder="Detail the materials used (e.g. pure tussar silk, vegetable dyes), traditional weaving technique, and artisan origin..."
                       value={formData.description}
                       onChange={handleInputChange}
-                      className="w-full px-3.5 py-2.5 text-sm bg-white text-zinc-900 border border-stone-300 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 placeholder-zinc-400"
+                      className="w-full px-3.5 py-2.5 text-sm bg-white text-zinc-900 border border-stone-300 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900 placeholder-zinc-400"
                     />
                     {formErrors.description && (
                       <p className="text-xs text-rose-500">{formErrors.description}</p>
@@ -399,7 +399,7 @@ export default function AddProductPage() {
                 {/* Section 3: Pricing & Inventory */}
                 <div className="space-y-4 pt-2">
                   <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
-                    <Package className="w-4 h-4 text-amber-700" />
+                    <Package className="w-4 h-4 text-blue-900" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-700">
                       3. Pricing & Inventory
                     </h2>
@@ -441,7 +441,7 @@ export default function AddProductPage() {
                 {/* Section 4: Craft Photography */}
                 <div className="space-y-4 pt-2">
                   <div className="flex items-center gap-2 pb-2 border-b border-stone-100">
-                    <Eye className="w-4 h-4 text-amber-700" />
+                    <Eye className="w-4 h-4 text-blue-900" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-700">
                       4. High-Resolution Craft Image
                     </h2>
@@ -477,7 +477,7 @@ export default function AddProductPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-amber-700 hover:bg-amber-800 text-white rounded-xl px-7 py-3 text-xs font-semibold shadow-sm transition-all"
+                    className="bg-blue-900 hover:bg-blue-950 text-white rounded-xl px-7 py-3 text-xs font-semibold shadow-sm transition-all"
                   >
                     {isSubmitting ? 'Verifying & Submitting...' : 'Submit Craft for Storefront Review'}
                   </Button>
@@ -489,12 +489,12 @@ export default function AddProductPage() {
             <div className="lg:col-span-5 sticky top-24 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-amber-700" />
+                  <Eye className="w-4 h-4 text-blue-900" />
                   <span className="text-xs font-bold uppercase tracking-wider text-zinc-700">
                     Live Storefront Preview
                   </span>
                 </div>
-                <span className="text-[11px] text-amber-700 font-medium bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60">
+                <span className="text-[11px] text-blue-900 font-medium bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200/60">
                   Real-time Simulation
                 </span>
               </div>
@@ -516,12 +516,12 @@ export default function AddProductPage() {
                 />
               </div>
 
-              <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/60 text-xs text-amber-900 space-y-1.5">
-                <div className="flex items-center gap-1.5 font-bold text-amber-950">
-                  <Info className="w-4 h-4 text-amber-700" />
+              <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/60 text-xs text-blue-900 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-blue-950">
+                  <Info className="w-4 h-4 text-blue-900" />
                   <span>Curation Standard</span>
                 </div>
-                <p className="text-[11px] leading-relaxed text-amber-800/90">
+                <p className="text-[11px] leading-relaxed text-blue-900/90">
                   Products listed on Amba Lifestyle must be handmade or artisan-crafted. Our review process takes under 24 hours. Once approved, your listing becomes instantly shoppable across India.
                 </p>
               </div>

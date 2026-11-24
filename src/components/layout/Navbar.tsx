@@ -197,10 +197,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between gap-4">
           {/* Logo on Left */}
           <Link href="/" className="flex items-center gap-1.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-full bg-[#ff6a00] text-white flex items-center justify-center font-serif font-black text-xl italic shadow-xs">
+            <div className="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-serif font-black text-xl italic shadow-xs">
               a
             </div>
-            <span className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-[#ff6a00] uppercase leading-none">
+            <span className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-blue-900 uppercase leading-none">
               amba<span className="font-sans text-xl sm:text-2xl font-bold text-zinc-900">.com</span>
             </span>
           </Link>
@@ -208,7 +208,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Utilities */}
           <div className="flex items-center gap-4 sm:gap-6 text-xs text-zinc-700">
             {/* Deliver to: IN */}
-            <div className="hidden sm:flex flex-col text-left leading-tight cursor-pointer hover:text-[#ff6a00]">
+            <div className="hidden sm:flex flex-col text-left leading-tight cursor-pointer hover:text-blue-900">
               <span className="text-[10px] text-zinc-400">Deliver to:</span>
               <div className="flex items-center gap-1 font-bold text-zinc-900 text-xs">
                 <span className="text-sm">🇮🇳</span>
@@ -217,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Language & Currency */}
-            <div className="hidden md:flex items-center gap-1.5 cursor-pointer hover:text-[#ff6a00] font-medium">
+            <div className="hidden md:flex items-center gap-1.5 cursor-pointer hover:text-blue-900 font-medium">
               <Globe className="w-4 h-4 text-zinc-500" />
               <span>English-INR</span>
             </div>
@@ -225,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* My Orders / Track Orders */}
             <Link
               href="/orders"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50/80 border border-orange-200 text-[#ff6a00] hover:bg-orange-100 font-bold text-xs transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 hover:bg-blue-100 font-bold text-xs transition-colors"
               title="My Orders & Tracking"
             >
               <ShoppingBag className="w-4 h-4" />
@@ -235,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* User Auth */}
             {currentUser ? (
               <div className="flex items-center gap-2 pl-2 border-l border-zinc-200">
-                <div className="w-7 h-7 rounded-full bg-orange-100 text-[#ff6a00] font-bold text-xs flex items-center justify-center border border-orange-300">
+                <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-900 font-bold text-xs flex items-center justify-center border border-blue-200">
                   {currentUser.name.charAt(0).toUpperCase()}
                 </div>
                 <span className="font-bold text-zinc-900 hidden lg:inline max-w-28 truncate text-xs">
@@ -253,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="hidden sm:flex items-center gap-1.5 font-bold text-zinc-800 hover:text-[#ff6a00] transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 font-bold text-zinc-800 hover:text-blue-900 transition-colors"
                 >
                   <User className="w-4 h-4 text-zinc-600" />
                   <span>Sign in</span>
@@ -261,7 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                 <Link
                   href="/register"
-                  className="px-4 py-2 rounded-full bg-[#ff6a00] hover:bg-[#e65a00] text-white font-bold text-xs shadow-xs transition-all active:scale-95"
+                  className="px-4 py-2 rounded-full bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs shadow-xs transition-all active:scale-95"
                 >
                   Create account
                 </Link>
@@ -300,30 +300,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>All categories</span>
             </button>
 
-            <a href="#feed" className="hover:text-[#ff6a00] transition-colors">
+            <a href="#feed" className="hover:text-blue-900 transition-colors">
               Verified manufacturers
             </a>
-            <a href="#feed" className="hover:text-[#ff6a00] transition-colors">
+            <a href="#feed" className="hover:text-blue-900 transition-colors">
               Dropshipping
             </a>
           </div>
 
           {/* Right sub-links */}
           <div className="flex items-center gap-5">
-            <a href="#feed" className="hover:text-[#ff6a00] transition-colors">
+            <a href="#feed" className="hover:text-blue-900 transition-colors">
               About Alibaba.com
             </a>
-            <a href="#feed" className="hover:text-[#ff6a00] transition-colors">
+            <a href="#feed" className="hover:text-blue-900 transition-colors">
               Help Center
             </a>
-            <a href="#feed" className="hover:text-[#ff6a00] transition-colors">
+            <a href="#feed" className="hover:text-blue-900 transition-colors">
               Accio Work
             </a>
             <a
               href="http://localhost:3002"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-[#ff6a00] transition-colors font-medium"
+              className="hover:text-blue-900 transition-colors font-medium"
             >
               Sell on Alibaba.com
             </a>
@@ -338,11 +338,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => handleModeClick('AI Mode')}
             className={`flex items-center gap-1 transition-colors ${
-              selectedMode === 'AI Mode' ? 'text-[#ff6a00]' : 'text-zinc-900 hover:text-[#ff6a00]'
+              selectedMode === 'AI Mode' ? 'text-blue-900' : 'text-zinc-900 hover:text-blue-900'
             }`}
           >
             <span>AI Mode</span>
-            <span className="text-[10px] text-[#ff6a00] font-black -mt-2">✨</span>
+            <span className="text-[10px] text-blue-900 font-black -mt-2">✨</span>
           </button>
 
           <span className="text-zinc-300 font-light">|</span>
@@ -354,13 +354,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <span
               className={`text-base sm:text-lg font-black ${
-                selectedMode === 'Products' ? 'text-[#ff6a00]' : 'text-zinc-900 hover:text-[#ff6a00]'
+                selectedMode === 'Products' ? 'text-blue-900' : 'text-zinc-900 hover:text-blue-900'
               }`}
             >
               Products
             </span>
             {selectedMode === 'Products' && (
-              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ff6a00] rounded-full"></span>
+              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-900 rounded-full"></span>
             )}
           </button>
 
@@ -368,7 +368,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => handleModeClick('Manufacturers')}
             className={`transition-colors ${
-              selectedMode === 'Manufacturers' ? 'text-[#ff6a00]' : 'text-zinc-900 hover:text-[#ff6a00]'
+              selectedMode === 'Manufacturers' ? 'text-blue-900' : 'text-zinc-900 hover:text-blue-900'
             }`}
           >
             Manufacturers
@@ -378,7 +378,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => handleModeClick('Worldwide')}
             className={`transition-colors ${
-              selectedMode === 'Worldwide' ? 'text-[#ff6a00]' : 'text-zinc-900 hover:text-[#ff6a00]'
+              selectedMode === 'Worldwide' ? 'text-blue-900' : 'text-zinc-900 hover:text-blue-900'
             }`}
           >
             Worldwide
@@ -391,7 +391,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-4xl mx-auto w-full pt-1">
           <form
             onSubmit={handleSearchSubmit}
-            className="w-full border-2 border-[#ff6600] rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 bg-white shadow-xs focus-within:shadow-md focus-within:ring-2 focus-within:ring-orange-200 transition-all flex flex-col justify-between min-h-[96px]"
+            className="w-full border-2 border-blue-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 bg-white shadow-xs focus-within:shadow-md focus-within:ring-2 focus-within:ring-blue-100 transition-all flex flex-col justify-between min-h-[96px]"
           >
             <input
               type="text"
@@ -406,7 +406,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => imageInputRef.current?.click()}
-                  className="flex items-center gap-1.5 hover:text-[#ff6a00] transition-colors"
+                  className="flex items-center gap-1.5 hover:text-blue-900 transition-colors"
                 >
                   <Camera className="w-4 h-4 text-zinc-600" />
                   <span>Image Search</span>
@@ -417,7 +417,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1.5 hover:text-[#ff6a00] transition-colors"
+                  className="flex items-center gap-1.5 hover:text-blue-900 transition-colors"
                 >
                   <FileText className="w-4 h-4 text-zinc-600" />
                   <span>Search with File</span>
@@ -426,7 +426,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 type="submit"
-                className="px-6 sm:px-8 py-2 rounded-full bg-[#ff6a00] hover:bg-[#e65a00] text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+                className="px-6 sm:px-8 py-2 rounded-full bg-blue-900 hover:bg-blue-950 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
               >
                 <Search className="w-4 h-4" />
                 <span>Search</span>
@@ -506,7 +506,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <Link
                           href={`/?category=${encodeURIComponent(cat.name)}#feed`}
                           onClick={() => setIsAllCategoriesOpen(false)}
-                          className="text-sm sm:text-base font-bold text-zinc-900 hover:text-[#ff6a00] flex items-center gap-2"
+                          className="text-sm sm:text-base font-bold text-zinc-900 hover:text-blue-900 flex items-center gap-2"
                         >
                           <span>{getCategoryIcon(cat.name)}</span>
                           <span>{cat.name}</span>
@@ -514,7 +514,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <Link
                           href={`/?category=${encodeURIComponent(cat.name)}#feed`}
                           onClick={() => setIsAllCategoriesOpen(false)}
-                          className="text-xs text-zinc-500 hover:text-[#ff6a00] hover:underline"
+                          className="text-xs text-zinc-500 hover:text-blue-900 hover:underline"
                         >
                           Browse all in {cat.name} &rarr;
                         </Link>
@@ -528,14 +528,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                             onClick={() => setIsAllCategoriesOpen(false)}
                             className="group flex flex-col items-center text-center cursor-pointer"
                           >
-                            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-100 border border-zinc-200/80 overflow-hidden flex items-center justify-center group-hover:scale-105 group-hover:border-[#ff6a00] transition-all shadow-2xs">
+                            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-100 border border-zinc-200/80 overflow-hidden flex items-center justify-center group-hover:scale-105 group-hover:border-blue-900 transition-all shadow-2xs">
                               <img
                                 src={getSubcategoryImage(sub)}
                                 alt={sub.name}
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <p className="text-xs text-zinc-800 text-center font-medium mt-2 leading-tight group-hover:text-[#ff6a00] transition-colors line-clamp-2 max-w-20">
+                            <p className="text-xs text-zinc-800 text-center font-medium mt-2 leading-tight group-hover:text-blue-900 transition-colors line-clamp-2 max-w-20">
                               {sub.name}
                             </p>
                           </Link>
@@ -570,7 +570,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <Link
                           href={`/?category=${encodeURIComponent(activeCat.name)}#feed`}
                           onClick={() => setIsAllCategoriesOpen(false)}
-                          className="text-xs text-[#ff6a00] font-bold hover:underline"
+                          className="text-xs text-blue-900 font-bold hover:underline"
                         >
                           View all {activeCat.name} products &rarr;
                         </Link>
@@ -585,14 +585,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                               onClick={() => setIsAllCategoriesOpen(false)}
                               className="group flex flex-col items-center text-center cursor-pointer"
                             >
-                              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-100 border border-zinc-200/80 overflow-hidden flex items-center justify-center group-hover:scale-105 group-hover:border-[#ff6a00] transition-all shadow-2xs">
+                              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-zinc-100 border border-zinc-200/80 overflow-hidden flex items-center justify-center group-hover:scale-105 group-hover:border-blue-900 transition-all shadow-2xs">
                                 <img
                                   src={getSubcategoryImage(sub)}
                                   alt={sub.name}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
-                              <p className="text-xs text-zinc-800 text-center font-medium mt-2 leading-tight group-hover:text-[#ff6a00] transition-colors line-clamp-2 max-w-20">
+                              <p className="text-xs text-zinc-800 text-center font-medium mt-2 leading-tight group-hover:text-blue-900 transition-colors line-clamp-2 max-w-20">
                                 {sub.name}
                               </p>
                             </Link>
@@ -605,7 +605,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           <Link
                             href={`/?category=${encodeURIComponent(activeCat.name)}#feed`}
                             onClick={() => setIsAllCategoriesOpen(false)}
-                            className="inline-block mt-3 px-4 py-2 bg-[#ff6a00] text-white rounded-xl text-xs font-bold"
+                            className="inline-block mt-3 px-4 py-2 bg-blue-900 text-white rounded-xl text-xs font-bold"
                           >
                             Explore {activeCat.name}
                           </Link>
@@ -629,27 +629,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setIsAllCategoriesOpen(!isAllCategoriesOpen);
                 setMobileMenuOpen(false);
               }}
-              className="block py-1 hover:text-[#ff6a00] font-bold text-left w-full"
+              className="block py-1 hover:text-blue-900 font-bold text-left w-full"
             >
               All categories
             </button>
-            <a href="#feed" className="block py-1 hover:text-[#ff6a00]">
+            <a href="#feed" className="block py-1 hover:text-blue-900">
               Verified manufacturers
             </a>
-            <a href="#feed" className="block py-1 hover:text-[#ff6a00]">
+            <a href="#feed" className="block py-1 hover:text-blue-900">
               Dropshipping
             </a>
-            <a href="#feed" className="block py-1 hover:text-[#ff6a00]">
+            <a href="#feed" className="block py-1 hover:text-blue-900">
               About Alibaba.com
             </a>
-            <a href="#feed" className="block py-1 hover:text-[#ff6a00]">
+            <a href="#feed" className="block py-1 hover:text-blue-900">
               Help Center
             </a>
             <a
               href="http://localhost:3002"
               target="_blank"
               rel="noreferrer"
-              className="block py-1 text-[#ff6a00] font-bold"
+              className="block py-1 text-blue-900 font-bold"
             >
               Sell on Alibaba.com
             </a>

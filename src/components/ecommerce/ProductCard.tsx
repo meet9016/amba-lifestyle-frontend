@@ -28,7 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isNew
 }) => {
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden border border-zinc-200 transition-all duration-300 hover:shadow-xl hover:border-amber-200 flex flex-col h-full">
+    <div className="group relative bg-white rounded-2xl overflow-hidden border border-zinc-200 transition-all duration-300 hover:shadow-xl hover:border-blue-900 flex flex-col h-full">
       {/* Image container */}
       <div className="relative aspect-4/5 bg-zinc-100 overflow-hidden">
         <Link href={`/product/${id}`} className="block w-full h-full">
@@ -70,16 +70,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Details */}
       <div className="p-4 flex flex-col flex-1 justify-between space-y-2">
         <div className="space-y-1">
-          <p className="text-[11px] text-amber-700 font-semibold uppercase tracking-wider">{category}</p>
+          <p className="text-[11px] text-blue-900 font-semibold uppercase tracking-wider">{category}</p>
           <Link href={`/product/${id}`}>
-            <h4 className="text-sm font-semibold text-zinc-900 line-clamp-2 hover:text-amber-700 transition-colors">
+            <h4 className="text-sm font-semibold text-zinc-900 line-clamp-2 hover:text-blue-900 transition-colors">
               {title}
             </h4>
           </Link>
         </div>
 
         <div>
-          <div className="flex items-center gap-1.5 text-amber-600 text-xs font-medium">
+          <div className="flex items-center gap-1.5 text-blue-900 text-xs font-medium">
             <div className="flex items-center text-amber-500">
               <Star className="w-3.5 h-3.5 fill-amber-500" />
             </div>

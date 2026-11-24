@@ -41,7 +41,7 @@ export const Select: React.FC<SelectProps> = ({
   options,
   className = '',
   id,
-  focusRingColor = 'focus:ring-amber-500',
+  focusRingColor = 'focus:ring-blue-900',
   ...props
 }) => {
   const selectId = id || props.name;

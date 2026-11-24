@@ -127,7 +127,7 @@ export default function CustomerOrdersPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-6">
           <div>
             <div className="flex items-center gap-2 text-xs text-stone-500 mb-1">
-              <Link href="/" className="hover:text-amber-800 transition-colors">Home</Link>
+              <Link href="/" className="hover:text-blue-900 transition-colors">Home</Link>
               <ChevronRight className="w-3.5 h-3.5" />
               <span className="font-semibold text-stone-900">My Bulk Orders & Order Tracking</span>
             </div>
@@ -154,7 +154,7 @@ export default function CustomerOrdersPage() {
           </div>
         ) : orders.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center border border-stone-200 shadow-xs space-y-4 max-w-lg mx-auto">
-            <div className="w-16 h-16 rounded-full bg-amber-50 text-amber-800 flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center mx-auto">
               <ShoppingBag className="w-8 h-8" />
             </div>
             <h3 className="text-lg font-serif font-bold text-stone-900">No Orders Placed Yet</h3>
@@ -163,7 +163,7 @@ export default function CustomerOrdersPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs shadow-md shadow-amber-800/20 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-900 hover:bg-blue-950 text-white font-semibold text-xs shadow-md shadow-blue-900/20 transition-all"
             >
               Explore Collections <ArrowRight className="w-4 h-4" />
             </Link>
@@ -188,7 +188,7 @@ export default function CustomerOrdersPage() {
                         <span className="font-mono font-bold text-sm text-stone-900">
                           {order.orderNumber}
                         </span>
-                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                        <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-900 border border-blue-200">
                           B2B Bulk Order
                         </span>
                       </div>
@@ -247,7 +247,7 @@ export default function CustomerOrdersPage() {
                               </div>
                               <span
                                 className={`text-xs font-bold block ${
-                                  isCurrent ? 'text-amber-900' : isDone ? 'text-stone-900' : 'text-stone-400'
+                                  isCurrent ? 'text-blue-900' : isDone ? 'text-stone-900' : 'text-stone-400'
                                 }`}
                               >
                                 {s.title}
@@ -300,7 +300,7 @@ export default function CustomerOrdersPage() {
                         </div>
                       ) : (
                         <div className="text-stone-800 font-semibold flex items-center gap-1.5">
-                          <Clock className="w-4 h-4 text-amber-600" /> {order.orderStage.replace(/_/g, ' ').toUpperCase()}
+                          <Clock className="w-4 h-4 text-blue-800" /> {order.orderStage.replace(/_/g, ' ').toUpperCase()}
                         </div>
                       )}
                       <p className="text-[11px] text-stone-500">
@@ -313,8 +313,8 @@ export default function CustomerOrdersPage() {
 
                   {/* Customer Custom Specifications & Reference Photos */}
                   {(order.customRequirements || (order.referenceImages && order.referenceImages.length > 0)) && (
-                    <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 space-y-2 text-xs">
-                      <strong className="text-[10px] font-bold text-amber-900 uppercase tracking-wider block">
+                    <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-2 text-xs">
+                      <strong className="text-[10px] font-bold text-blue-900 uppercase tracking-wider block">
                         Your Custom Order Specifications
                       </strong>
                       {order.customRequirements && (

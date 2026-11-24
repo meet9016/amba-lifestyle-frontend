@@ -191,11 +191,11 @@ export const CustomerSupportWidget = () => {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white rounded-full shadow-2xl shadow-amber-900/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-500/30 font-semibold text-xs tracking-wide group"
+            className="flex items-center gap-3 px-5 py-3.5 bg-blue-900 hover:bg-blue-950 text-white rounded-full shadow-2xl shadow-blue-950/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-blue-800 font-semibold text-xs tracking-wide group"
           >
             <div className="relative">
-              <MessageSquare className="w-5 h-5 text-amber-200" />
-              <span className="w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5 ring-2 ring-amber-900 animate-pulse" />
+              <MessageSquare className="w-5 h-5 text-white" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 absolute -top-0.5 -right-0.5 ring-2 ring-blue-900 animate-pulse" />
             </div>
             <span>Support & Live Chat</span>
           </button>
@@ -206,17 +206,17 @@ export const CustomerSupportWidget = () => {
       {isOpen && (
         <div className="fixed bottom-6 right-6 z-50 w-[92vw] sm:w-[400px] h-[560px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-zinc-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 duration-200 font-sans">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-950 text-white flex items-center justify-between shrink-0">
+          <div className="p-4 bg-blue-900 text-white flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-amber-700/80 border border-amber-500/40 flex items-center justify-center font-bold text-sm text-amber-100">
+              <div className="w-9 h-9 rounded-full bg-blue-950 border border-blue-700 flex items-center justify-center font-bold text-sm text-white">
                 A
               </div>
               <div>
                 <h3 className="font-bold text-xs tracking-wide flex items-center gap-1.5">
                   Amba Customer Concierge
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <Sparkles className="w-3.5 h-3.5 text-blue-200" />
                 </h3>
-                <p className="text-[10px] text-amber-200/80 flex items-center gap-1 mt-0.5">
+                <p className="text-[10px] text-white/80 flex items-center gap-1 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
                   Online • Typically replies instantly
                 </p>
@@ -243,7 +243,7 @@ export const CustomerSupportWidget = () => {
                 >
                   <div
                     className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${
-                      isMe ? 'bg-amber-800 text-white' : 'bg-stone-900 text-white'
+                      isMe ? 'bg-blue-900 text-white' : 'bg-stone-900 text-white'
                     }`}
                   >
                     {isMe ? <User className="w-3.5 h-3.5" /> : <Shield className="w-3.5 h-3.5" />}
@@ -260,7 +260,7 @@ export const CustomerSupportWidget = () => {
                     <div
                       className={`p-3 rounded-2xl text-xs leading-relaxed ${
                         isMe
-                          ? 'bg-amber-800 text-white rounded-tr-none shadow-xs text-left'
+                          ? 'bg-blue-900 text-white rounded-tr-none shadow-xs text-left'
                           : 'bg-white border border-stone-200 text-stone-800 rounded-tl-none shadow-xs text-left'
                       }`}
                     >
@@ -323,13 +323,13 @@ export const CustomerSupportWidget = () => {
                 placeholder="Ask about bulk pricing, custom crafts..."
                 value={inputText}
                 onChange={e => setInputText(e.target.value)}
-                className="flex-1 px-3.5 py-2 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-700/20"
+                className="flex-1 px-3.5 py-2 text-xs bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900/20"
               />
 
               <button
                 type="submit"
                 disabled={isSending || (!inputText.trim() && !attachedImage)}
-                className="p-2 rounded-xl bg-amber-800 hover:bg-amber-900 disabled:opacity-40 text-white transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-blue-900 hover:bg-blue-950 disabled:opacity-40 text-white transition-colors cursor-pointer"
               >
                 <Send className="w-4 h-4" />
               </button>

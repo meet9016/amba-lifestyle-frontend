@@ -15,7 +15,7 @@ export default function SingleProductPage({ params }: PageProps) {
     <Suspense
       fallback={
         <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-900"></div>
         </div>
       }
     >

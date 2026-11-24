@@ -91,36 +91,36 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-amber-50/30 text-zinc-900 w-full">
+    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900 w-full">
       <Navbar />
 
       <main className="flex-1 w-full flex items-center justify-center px-4 sm:px-8 lg:px-12 py-10 lg:py-16">
-        <div className="w-full max-w-5xl bg-white border border-amber-100/90 rounded-3xl shadow-2xl shadow-amber-950/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
+        <div className="w-full max-w-5xl bg-white border border-zinc-200 rounded-3xl shadow-2xl shadow-zinc-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[620px]">
           {/* Left Brand Showcase (5 cols) */}
-          <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-10 bg-gradient-to-br from-amber-950 via-amber-900 to-stone-900 text-white relative">
+          <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-10 bg-blue-950 text-white relative">
             <div className="space-y-4">
               <span className="font-serif text-2xl font-black tracking-widest uppercase block">
-                AMBA <span className="text-amber-400 font-sans text-xs">LIFESTYLE</span>
+                AMBA <span className="text-blue-300 font-sans text-xs">LIFESTYLE</span>
               </span>
-              <h2 className="text-2xl font-serif font-bold text-amber-50 leading-snug pt-4">
+              <h2 className="text-2xl font-serif font-bold text-white leading-snug pt-4">
                 Join India&apos;s Most Discerning Craft Connoisseurs.
               </h2>
-              <p className="text-xs text-amber-100/80 leading-relaxed">
+              <p className="text-xs text-blue-100/80 leading-relaxed">
                 Unlock handcrafted seasonal edits, artisan previews, and member-only bespoke creations directly from master guilds.
               </p>
             </div>
 
-            <div className="space-y-3.5 pt-8 border-t border-amber-800/60 text-xs text-amber-200">
+            <div className="space-y-3.5 pt-8 border-t border-blue-800/60 text-xs text-blue-200">
               <div className="flex items-center gap-2.5">
-                <Award className="w-4 h-4 text-amber-400 shrink-0" />
+                <Award className="w-4 h-4 text-blue-300 shrink-0" />
                 <span>Complimentary Member Shipping on All Orders</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-blue-300 shrink-0" />
                 <span>100% Certified Handcrafted Authenticity</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <HeartHandshake className="w-4 h-4 text-amber-400 shrink-0" />
+                <HeartHandshake className="w-4 h-4 text-blue-300 shrink-0" />
                 <span>Direct Artisan Fair-Trade Support</span>
               </div>
             </div>
@@ -130,8 +130,8 @@ export default function RegisterPage() {
           <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
             {/* Header */}
             <div className="mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-semibold uppercase tracking-wider mb-2">
-                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold uppercase tracking-wider mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-blue-900" />
                 <span>Connoisseur Club</span>
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900">
@@ -224,7 +224,7 @@ export default function RegisterPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-semibold shadow-md shadow-amber-900/10 flex items-center justify-center gap-2 text-sm mt-2"
+                  className="w-full py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-xl font-semibold shadow-md shadow-blue-950/10 flex items-center justify-center gap-2 text-sm mt-2"
                 >
                   {isSubmitting ? (
                     <span>Creating Account...</span>
@@ -241,7 +241,7 @@ export default function RegisterPage() {
                     Already have an account?{' '}
                     <Link
                       href="/login"
-                      className="font-semibold text-amber-800 hover:text-amber-900 underline underline-offset-4"
+                      className="font-semibold text-blue-900 hover:text-blue-950 underline underline-offset-4"
                     >
                       Sign In
                     </Link>

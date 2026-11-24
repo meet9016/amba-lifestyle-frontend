@@ -22,7 +22,7 @@ export const Button: React.FC<ButtonProps> = ({
     secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 focus:ring-zinc-400',
     outline: 'border border-zinc-200 text-zinc-800 hover:bg-zinc-50 hover:border-zinc-300 focus:ring-zinc-400 bg-white',
     ghost: 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900',
-    amber: 'bg-amber-700 text-white hover:bg-amber-800 focus:ring-amber-600 shadow-xs'
+    amber: 'bg-blue-900 text-white hover:bg-blue-950 focus:ring-blue-900 shadow-xs'
   };
 
   const sizes = {
