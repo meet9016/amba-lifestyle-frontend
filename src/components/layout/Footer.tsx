@@ -118,6 +118,7 @@ export const Footer = () => {
             Buyer Care & Concierge
           </h4>
           <ul className="space-y-2 text-xs">
+            <li><Link href="/contact" className="text-blue-400 hover:text-blue-300 font-bold">Contact Us & Concierge Desk &rarr;</Link></li>
             <li><Link href="/login" className="hover:text-blue-300 transition-colors">Buyer Account Sign In</Link></li>
             <li><Link href="/register" className="hover:text-blue-300 transition-colors">Join as Registered Buyer</Link></li>
             <li><span className="text-zinc-500">Concierge Desk: contact@ambalifestyle.com</span></li>
