@@ -37,6 +37,7 @@ import {
   Building2
 } from 'lucide-react';
 import { apiClient, API_ENDPOINTS } from '@/lib/api';
+import { Dropdown } from '@/components/ui/Dropdown';
 
 type CategoryType = 'fashion' | 'jewelry' | 'home_decor' | 'other';
 
@@ -927,16 +928,14 @@ export default function RequirementPortal() {
                   </span>
                   <button
                     onClick={() => setSelectedCompanyFilter('All')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                      selectedCompanyFilter === 'All'
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${selectedCompanyFilter === 'All'
                         ? 'bg-blue-900 text-white shadow-xs'
                         : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
-                    }`}
+                      }`}
                   >
                     <span>All</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
-                      selectedCompanyFilter === 'All' ? 'bg-white/20 text-white font-bold' : 'bg-zinc-200 text-zinc-700 font-bold'
-                    }`}>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${selectedCompanyFilter === 'All' ? 'bg-white/20 text-white font-bold' : 'bg-zinc-200 text-zinc-700 font-bold'
+                      }`}>
                       {catalogProducts.length}
                     </span>
                   </button>
@@ -950,17 +949,15 @@ export default function RequirementPortal() {
                       <button
                         key={comp}
                         onClick={() => setSelectedCompanyFilter(comp)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                          isSelected
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${isSelected
                             ? 'bg-blue-900 text-white shadow-xs'
                             : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
-                        }`}
+                          }`}
                       >
                         <Building2 className="w-3.5 h-3.5 shrink-0 opacity-70" />
                         <span>{comp}</span>
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
-                          isSelected ? 'bg-white/20 text-white font-bold' : 'bg-zinc-200 text-zinc-700 font-bold'
-                        }`}>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${isSelected ? 'bg-white/20 text-white font-bold' : 'bg-zinc-200 text-zinc-700 font-bold'
+                          }`}>
                           {count}
                         </span>
                       </button>
@@ -1262,61 +1259,50 @@ export default function RequirementPortal() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Department / Gender */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Department / Gender
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Department / Gender"
                           value={fashionGender}
-                          onChange={(e) => setFashionGender(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Women's Wear">Women's Wear</option>
-                          <option value="Men's Wear">Men's Wear</option>
-                          <option value="Kids Ethnic">Kids Ethnic</option>
-                          <option value="Unisex Fabric">Unisex Fabric</option>
-                        </select>
+                          onChange={(val) => setFashionGender(val)}
+                          options={["Women's Wear", "Men's Wear", "Kids Ethnic", "Unisex Fabric"]}
+                        />
                       </div>
 
                       {/* Apparel Size */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Apparel Size
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Apparel Size"
                           value={fashionSize}
-                          onChange={(e) => setFashionSize(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="XS (34 Chest)">XS (34 Chest)</option>
-                          <option value="S (36 Chest)">S (36 Chest)</option>
-                          <option value="M (38 Chest)">M (38 Chest)</option>
-                          <option value="L (40 Chest)">L (40 Chest)</option>
-                          <option value="XL (42 Chest)">XL (42 Chest)</option>
-                          <option value="XXL (44 Chest)">XXL (44 Chest)</option>
-                          <option value="Free Size (Saree/Fabric)">Free Size (Saree / Fabric)</option>
-                          <option value="Custom Measurement">Custom Measurement</option>
-                        </select>
+                          onChange={(val) => setFashionSize(val)}
+                          options={[
+                            "XS (34 Chest)",
+                            "S (36 Chest)",
+                            "M (38 Chest)",
+                            "L (40 Chest)",
+                            "XL (42 Chest)",
+                            "XXL (44 Chest)",
+                            "Free Size (Saree / Fabric)",
+                            "Custom Measurement"
+                          ]}
+                        />
                       </div>
 
                       {/* Fabric / Material */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Fabric / Weave
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Fabric / Weave"
                           value={fashionFabric}
-                          onChange={(e) => setFashionFabric(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Pure Handloom Silk">Pure Handloom Silk</option>
-                          <option value="Banarasi Katan Silk">Banarasi Katan Silk</option>
-                          <option value="Chanderi Silk Cotton">Chanderi Silk Cotton</option>
-                          <option value="Khadi Cotton Handspun">Khadi Cotton Handspun</option>
-                          <option value="Raw Silk / Tussar">Raw Silk / Tussar</option>
-                          <option value="Georgette / Chiffon">Georgette / Chiffon</option>
-                          <option value="Velvet">Velvet</option>
-                          <option value="Linen Blend">Linen Blend</option>
-                        </select>
+                          onChange={(val) => setFashionFabric(val)}
+                          options={[
+                            "Pure Handloom Silk",
+                            "Banarasi Katan Silk",
+                            "Chanderi Silk Cotton",
+                            "Khadi Cotton Handspun",
+                            "Raw Silk / Tussar",
+                            "Georgette / Chiffon",
+                            "Velvet",
+                            "Linen Blend"
+                          ]}
+                        />
                       </div>
                     </div>
 
@@ -1358,78 +1344,70 @@ export default function RequirementPortal() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Jewelry Type */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Jewelry Piece Type
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Jewelry Piece Type"
                           value={jewelryType}
-                          onChange={(e) => setJewelryType(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Necklace & Choker">Necklace & Choker</option>
-                          <option value="Bangles & Kadas">Bangles & Kadas</option>
-                          <option value="Earrings & Jhumkas">Earrings & Jhumkas</option>
-                          <option value="Rings">Finger Ring</option>
-                          <option value="Silverware / Utensil">Silverware / Puja Utensil</option>
-                          <option value="Anklet / Payal">Anklet / Payal</option>
-                          <option value="Complete Bridal Set">Complete Bridal Set</option>
-                        </select>
+                          onChange={(val) => setJewelryType(val)}
+                          options={[
+                            "Necklace & Choker",
+                            "Bangles & Kadas",
+                            "Earrings & Jhumkas",
+                            "Finger Ring",
+                            "Silverware / Puja Utensil",
+                            "Anklet / Payal",
+                            "Complete Bridal Set"
+                          ]}
+                        />
                       </div>
 
                       {/* Metal & Purity */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Metal & Purity
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Metal & Purity"
                           value={metalPurity}
-                          onChange={(e) => setMetalPurity(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="92.5 Sterling Silver">92.5 Sterling Silver</option>
-                          <option value="22K Gold Plated Brass">22K Gold Plated Brass</option>
-                          <option value="Oxidized Silver Finish">Oxidized Silver Finish</option>
-                          <option value="Pure Brass / Copper">Pure Brass / Copper</option>
-                          <option value="Solid 18K/22K Gold">Solid 18K/22K Gold</option>
-                        </select>
+                          onChange={(val) => setMetalPurity(val)}
+                          options={[
+                            "92.5 Sterling Silver",
+                            "22K Gold Plated Brass",
+                            "Oxidized Silver Finish",
+                            "Pure Brass / Copper",
+                            "Solid 18K/22K Gold"
+                          ]}
+                        />
                       </div>
 
                       {/* Gemstone / Inlay */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Stone / Inlay Style
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Stone / Inlay Style"
                           value={gemstoneType}
-                          onChange={(e) => setGemstoneType(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Kundan & Polki">Kundan & Polki</option>
-                          <option value="Natural Basra / Rice Pearls">Natural Pearls</option>
-                          <option value="Semi-Precious Gemstones">Semi-Precious Gemstones</option>
-                          <option value="Temple Art Enamel (Meenakari)">Temple Art / Meenakari</option>
-                          <option value="Plain High-Polish Metal">Plain High-Polish Metal</option>
-                        </select>
+                          onChange={(val) => setGemstoneType(val)}
+                          options={[
+                            "Kundan & Polki",
+                            "Natural Pearls",
+                            "Semi-Precious Gemstones",
+                            "Temple Art / Meenakari",
+                            "Plain High-Polish Metal"
+                          ]}
+                        />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Size (Bangle size / Ring size / Length)
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Size (Bangle size / Ring size / Length)"
                           value={jewelrySize}
-                          onChange={(e) => setJewelrySize(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value='Standard (16"-18" Necklace)'>Standard (16"-18" Necklace)</option>
-                          <option value="Bangle 2.4 (Small)">Bangle 2.4 (Small)</option>
-                          <option value="Bangle 2.6 (Medium)">Bangle 2.6 (Medium)</option>
-                          <option value="Bangle 2.8 (Large)">Bangle 2.8 (Large)</option>
-                          <option value="Ring Size 12-16">Ring Size 12-16</option>
-                          <option value="Custom Length / Openable">Custom Length / Openable</option>
-                        </select>
+                          onChange={(val) => setJewelrySize(val)}
+                          options={[
+                            'Standard (16"-18" Necklace)',
+                            "Bangle 2.4 (Small)",
+                            "Bangle 2.6 (Medium)",
+                            "Bangle 2.8 (Large)",
+                            "Ring Size 12-16",
+                            "Custom Length / Openable"
+                          ]}
+                        />
                       </div>
 
                       <div>
@@ -1456,38 +1434,34 @@ export default function RequirementPortal() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {/* Craft Medium */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Craft Material & Medium
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Craft Material & Medium"
                           value={craftMedium}
-                          onChange={(e) => setCraftMedium(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Solid Brass & Bronze">Solid Brass & Bronze</option>
-                          <option value="Hand-carved Teakwood / Sheesham">Hand-carved Teakwood / Sheesham</option>
-                          <option value="Jaipur Blue Pottery / Ceramic">Jaipur Blue Pottery / Ceramic</option>
-                          <option value="Makrana Marble / Soapstone">Makrana Marble / Soapstone</option>
-                          <option value="Handloom Woolen / Jute Rug">Handloom Woolen / Jute Rug</option>
-                        </select>
+                          onChange={(val) => setCraftMedium(val)}
+                          options={[
+                            "Solid Brass & Bronze",
+                            "Hand-carved Teakwood / Sheesham",
+                            "Jaipur Blue Pottery / Ceramic",
+                            "Makrana Marble / Soapstone",
+                            "Handloom Woolen / Jute Rug"
+                          ]}
+                        />
                       </div>
 
                       {/* Finish */}
                       <div>
-                        <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                          Finish & Coating
-                        </label>
-                        <select
+                        <Dropdown
+                          label="Finish & Coating"
                           value={decorFinish}
-                          onChange={(e) => setDecorFinish(e.target.value)}
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-900 focus:outline-none"
-                        >
-                          <option value="Antique Polish with Lacquer">Antique Polish with Lacquer</option>
-                          <option value="Glossy Mirror Finish">Glossy Mirror Finish</option>
-                          <option value="Distressed Vintage Rustic">Distressed Vintage Rustic</option>
-                          <option value="Natural Wood Grain Wax">Natural Wood Grain Wax</option>
-                          <option value="Hand-painted Glazed">Hand-painted Glazed</option>
-                        </select>
+                          onChange={(val) => setDecorFinish(val)}
+                          options={[
+                            "Antique Polish with Lacquer",
+                            "Glossy Mirror Finish",
+                            "Distressed Vintage Rustic",
+                            "Natural Wood Grain Wax",
+                            "Hand-painted Glazed"
+                          ]}
+                        />
                       </div>
                     </div>
 
