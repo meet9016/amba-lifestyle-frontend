@@ -929,8 +929,8 @@ export default function RequirementPortal() {
                   <button
                     onClick={() => setSelectedCompanyFilter('All')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${selectedCompanyFilter === 'All'
-                        ? 'bg-blue-900 text-white shadow-xs'
-                        : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
+                      ? 'bg-blue-900 text-white shadow-xs'
+                      : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
                       }`}
                   >
                     <span>All</span>
@@ -950,8 +950,8 @@ export default function RequirementPortal() {
                         key={comp}
                         onClick={() => setSelectedCompanyFilter(comp)}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${isSelected
-                            ? 'bg-blue-900 text-white shadow-xs'
-                            : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
+                          ? 'bg-blue-900 text-white shadow-xs'
+                          : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-600'
                           }`}
                       >
                         <Building2 className="w-3.5 h-3.5 shrink-0 opacity-70" />
