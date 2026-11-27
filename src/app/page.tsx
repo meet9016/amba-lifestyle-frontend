@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   FilePlus,
@@ -34,10 +34,13 @@ import {
   ImageOff,
   User,
   MapPin,
-  Building2
+  Building2,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { apiClient, API_ENDPOINTS } from '@/lib/api';
 import { Dropdown } from '@/components/ui/Dropdown';
+import { CountryFlag } from '@/components/ui/CountryFlag';
 
 type CategoryType = 'fashion' | 'jewelry' | 'home_decor' | 'other';
 
@@ -58,6 +61,7 @@ interface CustomerInquiry {
   fullName?: string;
   address?: string;
   pincode?: string;
+  country?: string;
   category?: CategoryType;
   size: string;
   specifications?: Record<string, any>;
@@ -104,6 +108,159 @@ const CATEGORY_CONFIG = [
   }
 ];
 
+export type CountryId = 'india' | 'australia' | 'usa' | 'uk';
+
+export interface CountryOption {
+  id: CountryId;
+  name: string;
+  code: string;
+  flag: string;
+  currency: string;
+  fashionSpecs: {
+    genderOptions: string[];
+    sizeOptions: string[];
+    fabricOptions: string[];
+    defaultGender: string;
+    defaultSize: string;
+    defaultFabric: string;
+  };
+}
+
+export const COUNTRY_OPTIONS: CountryOption[] = [
+  {
+    id: 'india',
+    name: 'India',
+    code: 'IN',
+    flag: '🇮🇳',
+    currency: '₹ INR',
+    fashionSpecs: {
+      genderOptions: ["Women's Wear", "Men's Wear", "Kids Ethnic", "Unisex Fabric"],
+      sizeOptions: [
+        "XS (34 Chest)",
+        "S (36 Chest)",
+        "M (38 Chest)",
+        "L (40 Chest)",
+        "XL (42 Chest)",
+        "XXL (44 Chest)",
+        "Free Size (Saree / Fabric)",
+        "Custom Measurement"
+      ],
+      fabricOptions: [
+        "Pure Handloom Silk",
+        "Banarasi Katan Silk",
+        "Chanderi Silk Cotton",
+        "Khadi Cotton Handspun",
+        "Raw Silk / Tussar",
+        "Georgette / Chiffon",
+        "Velvet",
+        "Linen Blend"
+      ],
+      defaultGender: "Women's Wear",
+      defaultSize: "M (38 Chest)",
+      defaultFabric: "Pure Handloom Silk"
+    }
+  },
+  {
+    id: 'australia',
+    name: 'Australia',
+    code: 'AU',
+    flag: '🇦🇺',
+    currency: '$ AUD',
+    fashionSpecs: {
+      genderOptions: ["Women's Resort Wear", "Men's Casual Linen", "Kids Beachwear & Summer", "Unisex Eco Apparel"],
+      sizeOptions: [
+        "AU 6 (XS / 30\" Chest)",
+        "AU 8 (S / 32\" Chest)",
+        "AU 10 (M / 34\" Chest)",
+        "AU 12 (L / 36\" Chest)",
+        "AU 14 (XL / 38\" Chest)",
+        "AU 16 (XXL / 40\" Chest)",
+        "One Size (Relaxed Kaftan)",
+        "Custom Measurement"
+      ],
+      fabricOptions: [
+        "Pure Organic Belgian Linen",
+        "Breathable Handloom Cotton",
+        "Eco-dyed Mulberry Silk",
+        "Hemp & Linen Blend",
+        "Bamboo Rayon",
+        "Cotton Voile / Muslin",
+        "Organic Cotton Jersey",
+        "Linen Silk Blend"
+      ],
+      defaultGender: "Women's Resort Wear",
+      defaultSize: "AU 10 (M / 34\" Chest)",
+      defaultFabric: "Pure Organic Belgian Linen"
+    }
+  },
+  {
+    id: 'usa',
+    name: 'USA',
+    code: 'US',
+    flag: '🇺🇸',
+    currency: '$ USD',
+    fashionSpecs: {
+      genderOptions: ["Women's Contemporary & Boho", "Men's Casual & Outerwear", "Kids Denim & Apparel", "Unisex Streetwear"],
+      sizeOptions: [
+        "US XS (0-2)",
+        "US S (4-6)",
+        "US M (8-10)",
+        "US L (12-14)",
+        "US XL (16-18)",
+        "US XXL (20-22)",
+        "One Size / Free Size",
+        "Custom Measurement"
+      ],
+      fabricOptions: [
+        "Heavy Embroidered Denim",
+        "Pure Cashmere & Pashmina",
+        "Organic Heavy Cotton Twill",
+        "Raw Silk & Crushed Velvet",
+        "Flannel & Wool Blend",
+        "Pima Cotton",
+        "Rayon Challis",
+        "Loomed Jacquard"
+      ],
+      defaultGender: "Women's Contemporary & Boho",
+      defaultSize: "US M (8-10)",
+      defaultFabric: "Heavy Embroidered Denim"
+    }
+  },
+  {
+    id: 'uk',
+    name: 'UK',
+    code: 'GB',
+    flag: '🇬🇧',
+    currency: '£ GBP',
+    fashionSpecs: {
+      genderOptions: ["Women's Heritage & Tailoring", "Men's Bespoke & Knitwear", "Kids Classic Wear", "Unisex Knitwear"],
+      sizeOptions: [
+        "UK 6 (XS / 30\" Chest)",
+        "UK 8 (S / 32\" Chest)",
+        "UK 10 (M / 34\" Chest)",
+        "UK 12 (L / 36\" Chest)",
+        "UK 14 (XL / 38\" Chest)",
+        "UK 16 (XXL / 40\" Chest)",
+        "Free Size (Wrap / Stole)",
+        "Bespoke Measurement"
+      ],
+      fabricOptions: [
+        "Scottish / Cashmere Pure Weave",
+        "Handwoven Heritage Tweed",
+        "Fine Mulberry Silk",
+        "Organic British Wool",
+        "Royal Velvet",
+        "Fine Cotton Poplin",
+        "Linen Cotton Weave",
+        "Worsted Wool"
+      ],
+      defaultGender: "Women's Heritage & Tailoring",
+      defaultSize: "UK 10 (M / 34\" Chest)",
+      defaultFabric: "Scottish / Cashmere Pure Weave"
+    }
+  }
+];
+
 export default function RequirementPortal() {
   const [activeTab, setActiveTab] = useState<'products' | 'submit' | 'track'>('products');
 
@@ -137,6 +294,11 @@ export default function RequirementPortal() {
     const comp = (p.companyName || p.vendorName || '').trim().toLowerCase();
     return comp === selectedCompanyFilter.toLowerCase();
   });
+
+  // COUNTRY SELECTION (India, Australia, USA, UK)
+  const [selectedCountry, setSelectedCountry] = useState<CountryId>('india');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState<boolean>(false);
+  const countryDropdownRef = useRef<HTMLDivElement>(null);
 
   // SUBMIT FORM STATE - GENERAL
   const [category, setCategory] = useState<CategoryType>('fashion');
@@ -203,6 +365,40 @@ export default function RequirementPortal() {
   const showToast = (type: 'success' | 'error' | 'info', message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 6000);
+  };
+
+  const currentCountry = COUNTRY_OPTIONS.find((c) => c.id === selectedCountry) || COUNTRY_OPTIONS[0];
+
+  // Close country dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(e.target as Node)) {
+        setIsCountryDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const handleCountryChange = (cId: CountryId) => {
+    setSelectedCountry(cId);
+    setIsCountryDropdownOpen(false);
+    const chosen = COUNTRY_OPTIONS.find((c) => c.id === cId) || COUNTRY_OPTIONS[0];
+    showToast('info', `Country selected: ${chosen.flag} ${chosen.name} - Fashion specifications updated`);
+
+    // Only update fashion dropdown selections if currently on fashion category
+    setFashionGender(chosen.fashionSpecs.defaultGender);
+    setFashionSize(chosen.fashionSpecs.defaultSize);
+    setFashionFabric(chosen.fashionSpecs.defaultFabric);
+  };
+
+  const isPincodeValid = (val: string, countryId: CountryId) => {
+    const trimmed = (val || '').trim();
+    if (!trimmed) return false;
+    if (countryId === 'australia') return trimmed.replace(/\D/g, '').length >= 4;
+    if (countryId === 'usa') return trimmed.replace(/\D/g, '').length >= 5;
+    if (countryId === 'uk') return trimmed.length >= 4;
+    return trimmed.replace(/\D/g, '').length >= 6;
   };
 
   // Helper to compute effective primary size string based on chosen category
@@ -303,9 +499,9 @@ export default function RequirementPortal() {
     setUserPhone('');
 
     // Fashion
-    setFashionGender("Women's Wear");
-    setFashionSize('M (38)');
-    setFashionFabric('Pure Handloom Silk');
+    setFashionGender(currentCountry.fashionSpecs.defaultGender);
+    setFashionSize(currentCountry.fashionSpecs.defaultSize);
+    setFashionFabric(currentCountry.fashionSpecs.defaultFabric);
     setFashionColorWork('');
     setFashionCustomMeasurements('');
 
@@ -347,8 +543,18 @@ export default function RequirementPortal() {
       return;
     }
 
-    if (!userPincode.trim() || userPincode.length < 6) {
-      showToast('error', 'Please enter a valid 6-digit Pincode');
+    if (!isPincodeValid(userPincode, selectedCountry)) {
+      showToast(
+        'error',
+        `Please enter a valid ${selectedCountry === 'usa'
+          ? '5-digit ZIP code'
+          : selectedCountry === 'australia'
+            ? '4-digit Postal code'
+            : selectedCountry === 'uk'
+              ? 'UK Postal code'
+              : '6-digit Pincode'
+        }`
+      );
       return;
     }
 
@@ -397,8 +603,18 @@ export default function RequirementPortal() {
       return;
     }
 
-    if (!userPincode.trim() || userPincode.length < 6) {
-      showToast('error', 'Please enter a valid 6-digit Pincode');
+    if (!isPincodeValid(userPincode, selectedCountry)) {
+      showToast(
+        'error',
+        `Please enter a valid ${selectedCountry === 'usa'
+          ? '5-digit ZIP code'
+          : selectedCountry === 'australia'
+            ? '4-digit Postal code'
+            : selectedCountry === 'uk'
+              ? 'UK Postal code'
+              : '6-digit Pincode'
+        }`
+      );
       return;
     }
 
@@ -415,12 +631,16 @@ export default function RequirementPortal() {
       const payload = {
         name: productName.trim(),
         fullName: userFullName.trim(),
+        country: currentCountry.name,
         address: userAddress.trim(),
         pincode: userPincode.trim(),
         quantity: Number(quantity) || 1,
         category,
         size: computedSize,
-        specifications: computedSpecs,
+        specifications: {
+          ...computedSpecs,
+          country: currentCountry.name
+        },
         description: description.trim(),
         email: userEmail.trim().toLowerCase(),
         phone: userPhone.trim(),
@@ -700,11 +920,15 @@ export default function RequirementPortal() {
       const payload = {
         name: pName,
         fullName: inquireCustomerName.trim(),
+        country: currentCountry.name,
         address: inquireCustomerAddress.trim(),
         pincode: inquireCustomerPincode.trim(),
         quantity: Number(inquireCustomerQuantity) || 1,
         category: selectedProductForInquiry.category || 'other',
         size: `Catalog Price: ₹${pPrice}`,
+        specifications: {
+          country: currentCountry.name
+        },
         description: inquireCustomerMessage.trim() || `Inquiry for ${pName} (₹${pPrice})`,
         email: inquireCustomerEmail.trim().toLowerCase(),
         phone: inquireCustomerPhone.trim(),
@@ -790,6 +1014,29 @@ export default function RequirementPortal() {
     }
   };
 
+  const getCountryBadge = (country?: string) => {
+    if (!country) return null;
+    const lower = country.toLowerCase();
+    let label = 'India';
+    let code = 'india';
+    if (lower.includes('aus')) {
+      label = 'Australia';
+      code = 'australia';
+    } else if (lower.includes('usa') || lower.includes('us') || lower.includes('america')) {
+      label = 'USA';
+      code = 'usa';
+    } else if (lower.includes('uk') || lower.includes('britain') || lower.includes('kingdom')) {
+      label = 'UK';
+      code = 'uk';
+    }
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-white text-zinc-700 border border-zinc-200 shadow-2xs whitespace-nowrap">
+        <CountryFlag country={code} className="w-3.5 h-2.5" />
+        <span>{label}</span>
+      </span>
+    );
+  };
+
   const currentCategoryConfig = CATEGORY_CONFIG.find((c) => c.id === category);
 
   return (
@@ -812,6 +1059,56 @@ export default function RequirementPortal() {
               </div>
               <p className="text-[11px] text-zinc-500 font-medium">Custom Craft & Manufacturing Requirements</p>
             </div>
+          </div>
+
+          {/* COUNTRY SELECTOR DROPDOWN WITH FLAGS (INDIA, AUSTRALIA, USA, UK) */}
+          <div className="relative" ref={countryDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-xs sm:text-sm font-bold text-zinc-800 transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-900"
+              aria-label="Select Country"
+            >
+              <CountryFlag country={currentCountry.id} className="w-5 h-3.5" />
+              <span className="font-semibold text-zinc-900">{currentCountry.name}</span>
+              <span className="text-[10px] text-zinc-500 bg-zinc-200/80 px-1.5 py-0.5 rounded font-mono hidden sm:inline">
+                {currentCountry.currency}
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-zinc-500 transition-transform ${isCountryDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isCountryDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-zinc-200/90 py-2 z-50 animate-fadeIn">
+                <div className="px-3 py-1.5 border-b border-zinc-100 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Select Country / Region
+                </div>
+                <div className="p-1 space-y-0.5">
+                  {COUNTRY_OPTIONS.map((c) => {
+                    const isSelected = c.id === selectedCountry;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => handleCountryChange(c.id)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${isSelected
+                          ? 'bg-blue-50 text-blue-900 font-bold'
+                          : 'text-zinc-700 hover:bg-zinc-50'
+                          }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <CountryFlag country={c.id} className="w-5 h-3.5" />
+                          <span className="text-left font-medium text-zinc-900">{c.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono text-zinc-500">{c.currency}</span>
+                          {isSelected && <Check className="w-4 h-4 text-blue-900" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -1256,6 +1553,16 @@ export default function RequirementPortal() {
                 {/* ======================================================== */}
                 {category === 'fashion' && (
                   <div className="p-4 bg-rose-50/40 rounded-2xl border border-rose-100 space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between text-xs font-semibold text-rose-900 border-b border-rose-100 pb-2">
+                      <div className="flex items-center gap-2">
+                        <CountryFlag country={currentCountry.id} className="w-5 h-3.5" />
+                        <span>{currentCountry.name} Fashion & Sizing Standards</span>
+                      </div>
+                      <span className="text-[11px] text-rose-700 bg-rose-100/70 px-2 py-0.5 rounded-full font-medium">
+                        Country-Specific Dropdown Values
+                      </span>
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Department / Gender */}
                       <div>
@@ -1263,7 +1570,7 @@ export default function RequirementPortal() {
                           label="Department / Gender"
                           value={fashionGender}
                           onChange={(val) => setFashionGender(val)}
-                          options={["Women's Wear", "Men's Wear", "Kids Ethnic", "Unisex Fabric"]}
+                          options={currentCountry.fashionSpecs.genderOptions}
                         />
                       </div>
 
@@ -1273,16 +1580,7 @@ export default function RequirementPortal() {
                           label="Apparel Size"
                           value={fashionSize}
                           onChange={(val) => setFashionSize(val)}
-                          options={[
-                            "XS (34 Chest)",
-                            "S (36 Chest)",
-                            "M (38 Chest)",
-                            "L (40 Chest)",
-                            "XL (42 Chest)",
-                            "XXL (44 Chest)",
-                            "Free Size (Saree / Fabric)",
-                            "Custom Measurement"
-                          ]}
+                          options={currentCountry.fashionSpecs.sizeOptions}
                         />
                       </div>
 
@@ -1292,16 +1590,7 @@ export default function RequirementPortal() {
                           label="Fabric / Weave"
                           value={fashionFabric}
                           onChange={(val) => setFashionFabric(val)}
-                          options={[
-                            "Pure Handloom Silk",
-                            "Banarasi Katan Silk",
-                            "Chanderi Silk Cotton",
-                            "Khadi Cotton Handspun",
-                            "Raw Silk / Tussar",
-                            "Georgette / Chiffon",
-                            "Velvet",
-                            "Linen Blend"
-                          ]}
+                          options={currentCountry.fashionSpecs.fabricOptions}
                         />
                       </div>
                     </div>
@@ -1713,17 +2002,33 @@ export default function RequirementPortal() {
 
                   <div>
                     <label className="block text-xs font-bold text-zinc-800 uppercase tracking-wider mb-2">
-                      Pincode <span className="text-rose-500">*</span>
+                      {selectedCountry === 'usa' ? 'ZIP Code' : selectedCountry === 'australia' || selectedCountry === 'uk' ? 'Postal Code' : 'Pincode'} <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative">
                       <MapPin className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
-                        maxLength={6}
+                        maxLength={selectedCountry === 'uk' ? 10 : 8}
                         required
-                        placeholder="6-digit pincode"
+                        placeholder={
+                          selectedCountry === 'usa'
+                            ? '5-digit ZIP code'
+                            : selectedCountry === 'australia'
+                              ? '4-digit Postal code'
+                              : selectedCountry === 'uk'
+                                ? 'UK Postal code'
+                                : '6-digit pincode'
+                        }
                         value={userPincode}
-                        onChange={(e) => setUserPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (selectedCountry === 'uk') {
+                            setUserPincode(val.slice(0, 10));
+                          } else {
+                            const maxLen = selectedCountry === 'australia' ? 4 : selectedCountry === 'usa' ? 5 : 6;
+                            setUserPincode(val.replace(/\D/g, '').slice(0, maxLen));
+                          }
+                        }}
                         className="w-full pl-10 pr-4 py-3 bg-zinc-50/70 border border-zinc-200 rounded-xl text-sm font-mono font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-900 transition-all"
                       />
                     </div>
@@ -1741,8 +2046,7 @@ export default function RequirementPortal() {
                         !userEmail ||
                         !userEmail.includes('@') ||
                         !userAddress.trim() ||
-                        !userPincode.trim() ||
-                        userPincode.length < 6
+                        !isPincodeValid(userPincode, selectedCountry)
                       }
                       className="w-full py-3.5 bg-blue-900 hover:bg-blue-950 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -1963,15 +2267,18 @@ export default function RequirementPortal() {
                     return (
                       <div
                         key={inq._id || inq.inquiryNumber}
-                        className="bg-white rounded-3xl border border-zinc-200 shadow-lg shadow-zinc-200/40 overflow-hidden transition-all hover:border-zinc-300"
+                        className="bg-white rounded-3xl border border-zinc-200/90 shadow-md shadow-zinc-200/50 overflow-hidden transition-all hover:border-zinc-300 hover:shadow-lg"
                       >
-                        <div className="p-4 bg-zinc-50/80 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">
-                          <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-xs font-black text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                        {/* 1. COMPACT TOP HEADER */}
+                        <div className="px-4 py-3 sm:px-5 sm:py-3.5 bg-gradient-to-r from-zinc-50 via-white to-zinc-50 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-2.5">
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                            <span className="font-mono text-xs font-black text-blue-900 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 shadow-2xs tracking-wide">
                               #{inq.inquiryNumber}
                             </span>
                             {getCategoryBadge(inq.category)}
-                            <span className="text-xs text-zinc-400">
+                            {inq.country && getCountryBadge(inq.country)}
+                            <span className="text-xs text-zinc-400 font-medium flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-zinc-400" />
                               Submitted {inq.createdAt ? new Date(inq.createdAt).toLocaleDateString() : 'Recently'}
                             </span>
                           </div>
@@ -1979,205 +2286,278 @@ export default function RequirementPortal() {
                           <div>{getStatusBadge(inq.status)}</div>
                         </div>
 
-                        <div className="p-6 space-y-5">
-                          <div className="flex flex-col sm:flex-row gap-5">
-                            <div className="shrink-0 space-y-2">
-                              {hasImages ? (
-                                <div
-                                  onClick={() => setPreviewImageModal(primaryImage)}
-                                  className="w-28 h-28 rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden cursor-pointer relative group shadow-sm"
-                                >
-                                  <img
-                                    src={primaryImage}
-                                    alt={inq.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                  />
-                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                    <Eye className="w-5 h-5 text-white" />
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="w-28 h-28 rounded-2xl bg-zinc-50 border border-dashed border-zinc-300 flex flex-col items-center justify-center text-zinc-400 p-2 text-center">
-                                  <ImageOff className="w-6 h-6 text-zinc-300 mb-1" />
-                                  <span className="text-[10px] font-semibold text-zinc-400">No Photo</span>
-                                </div>
-                              )}
-
-                              {allImages.length > 1 && (
-                                <div className="flex items-center gap-1.5 max-w-[120px] overflow-x-auto pb-1">
-                                  {allImages.map((extraImg, imgIdx) => (
-                                    <div
-                                      key={imgIdx}
-                                      onClick={() => setPreviewImageModal(extraImg)}
-                                      className="w-8 h-8 rounded-lg overflow-hidden border border-zinc-200 cursor-pointer shrink-0 hover:opacity-80"
-                                      title={`View Photo ${imgIdx + 1}`}
-                                    >
-                                      <img
-                                        src={extraImg}
-                                        alt={`Thumbnail ${imgIdx + 1}`}
-                                        className="w-full h-full object-cover"
-                                      />
+                        {/* 2. DUAL-PANE COMPACT BODY (REDUCES VERTICAL SCROLLING BY 50%+) */}
+                        <div className="p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                          {/* LEFT COLUMN: REQUIREMENT SPECS, STATUS & PROGRESS (7 COLS) */}
+                          <div className="lg:col-span-7 flex flex-col justify-between space-y-3.5">
+                            {/* Product & Photo Row */}
+                            <div className="flex gap-4 items-start">
+                              {/* Photo Thumbnail */}
+                              <div className="shrink-0 space-y-1.5">
+                                {hasImages ? (
+                                  <div
+                                    onClick={() => setPreviewImageModal(primaryImage)}
+                                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-zinc-100 border border-zinc-200 overflow-hidden cursor-pointer relative group shadow-xs hover:shadow-md transition-all"
+                                    title="Click to view full photo"
+                                  >
+                                    <img
+                                      src={primaryImage}
+                                      alt={inq.name}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                      <Eye className="w-5 h-5 text-white" />
                                     </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                                  </div>
+                                ) : (
+                                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-zinc-50 border border-dashed border-zinc-300 flex flex-col items-center justify-center text-zinc-400 p-2 text-center">
+                                    <ImageOff className="w-5 h-5 text-zinc-300 mb-1" />
+                                    <span className="text-[10px] font-semibold text-zinc-400">No Photo</span>
+                                  </div>
+                                )}
 
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-lg font-bold text-zinc-900">{inq.name}</h4>
-                              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                                <span className="bg-blue-50 text-blue-900 font-semibold px-2.5 py-1 rounded-lg border border-blue-200">
-                                  Specifications: {inq.size}
-                                </span>
-                                <span className="bg-zinc-100 text-zinc-700 font-semibold px-2.5 py-1 rounded-lg">
-                                  Qty: {inq.quantity || 1} units
-                                </span>
-                                {(inq.fullName || inq.specifications?.fullName) && (
-                                  <span className="bg-zinc-100 text-zinc-800 font-medium px-2.5 py-1 rounded-lg flex items-center gap-1">
-                                    <User className="w-3 h-3 text-blue-900" />
-                                    {inq.fullName || inq.specifications?.fullName}
-                                  </span>
-                                )}
-                                {(inq.pincode || inq.specifications?.pincode) && (
-                                  <span className="bg-zinc-100 text-zinc-800 font-medium px-2.5 py-1 rounded-lg flex items-center gap-1">
-                                    <MapPin className="w-3 h-3 text-blue-900" />
-                                    Pin: {inq.pincode || inq.specifications?.pincode}
-                                  </span>
-                                )}
                                 {allImages.length > 1 && (
-                                  <span className="bg-blue-50 text-blue-900 font-semibold px-2.5 py-1 rounded-lg border border-blue-200">
-                                    {allImages.length} Photos Attached
-                                  </span>
+                                  <div className="flex items-center gap-1 max-w-[96px] overflow-x-auto pb-0.5">
+                                    {allImages.map((extraImg, imgIdx) => (
+                                      <div
+                                        key={imgIdx}
+                                        onClick={() => setPreviewImageModal(extraImg)}
+                                        className="w-7 h-7 rounded-md overflow-hidden border border-zinc-200 cursor-pointer shrink-0 hover:opacity-80 transition-opacity"
+                                        title={`View Photo ${imgIdx + 1}`}
+                                      >
+                                        <img
+                                          src={extraImg}
+                                          alt={`Thumbnail ${imgIdx + 1}`}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
                                 )}
                               </div>
 
-                              {(inq.address || inq.specifications?.address) && (
-                                <p className="text-[11px] text-zinc-600 mt-2.5 flex items-start gap-1 bg-zinc-50 px-3 py-2 rounded-xl border border-zinc-200">
-                                  <MapPin className="w-3.5 h-3.5 text-blue-900 shrink-0 mt-0.5" />
-                                  <span><strong className="font-semibold text-zinc-800">Delivery Address:</strong> {inq.address || inq.specifications?.address}</span>
-                                </p>
-                              )}
+                              {/* Titles & Specs */}
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-base sm:text-lg font-extrabold text-zinc-900 tracking-tight truncate">
+                                  {inq.name}
+                                </h4>
 
-                              {inq.description && (
-                                <p className="text-xs text-zinc-600 mt-3 leading-relaxed bg-zinc-50 p-3 rounded-xl border border-zinc-100">
-                                  "{inq.description}"
-                                </p>
-                              )}
+                                <div className="mt-1.5 flex flex-wrap gap-1.5 text-xs">
+                                  <span className="bg-blue-50 text-blue-900 font-bold px-2.5 py-0.5 rounded-lg border border-blue-200 text-[11px] flex items-center gap-1">
+                                    <Sparkles className="w-3 h-3 text-blue-700" />
+                                    <span>{inq.size}</span>
+                                  </span>
+                                  <span className="bg-zinc-100 text-zinc-700 font-semibold px-2 py-0.5 rounded-lg text-[11px]">
+                                    Qty: {inq.quantity || 1}
+                                  </span>
+                                  {(inq.fullName || inq.specifications?.fullName) && (
+                                    <span className="bg-zinc-100 text-zinc-800 font-medium px-2 py-0.5 rounded-lg text-[11px] flex items-center gap-1">
+                                      <User className="w-3 h-3 text-blue-900" />
+                                      {inq.fullName || inq.specifications?.fullName}
+                                    </span>
+                                  )}
+                                  {(inq.pincode || inq.specifications?.pincode) && (
+                                    <span className="bg-zinc-100 text-zinc-800 font-medium px-2 py-0.5 rounded-lg text-[11px] flex items-center gap-1 font-mono">
+                                      <MapPin className="w-3 h-3 text-blue-900" />
+                                      {inq.pincode || inq.specifications?.pincode}
+                                    </span>
+                                  )}
+                                  {allImages.length > 1 && (
+                                    <span className="bg-blue-50 text-blue-900 font-semibold px-2 py-0.5 rounded-lg text-[11px] border border-blue-200">
+                                      {allImages.length} Photos
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Delivery Address */}
+                                {(inq.address || inq.specifications?.address) && (
+                                  <div className="mt-2 flex items-start gap-1.5 text-[11px] text-zinc-600 bg-zinc-50/80 px-2.5 py-1.5 rounded-xl border border-zinc-200/70">
+                                    <MapPin className="w-3.5 h-3.5 text-blue-900 shrink-0 mt-0.5" />
+                                    <span className="line-clamp-2">
+                                      <strong className="font-semibold text-zinc-800">Delivery:</strong> {inq.address || inq.specifications?.address}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {/* Description */}
+                                {inq.description && (
+                                  <p className="mt-1.5 text-[11px] text-zinc-600 italic bg-zinc-50/60 px-2.5 py-1 rounded-lg border-l-2 border-blue-900 line-clamp-2">
+                                    &ldquo;{inq.description}&rdquo;
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Quotation Notice / Official Quote */}
+                            {inq.quotedPrice && inq.quotedPrice > 0 ? (
+                              <div className="p-3 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-white border-l-4 border-l-emerald-600 rounded-xl border border-emerald-200 shadow-2xs flex items-center justify-between">
+                                <div>
+                                  <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                                    Official Quotation
+                                  </p>
+                                  <h4 className="text-xl font-black text-emerald-800 mt-0.5">
+                                    ₹{inq.quotedPrice.toLocaleString()}{' '}
+                                    <span className="text-[10px] font-bold text-emerald-600">INR</span>
+                                  </h4>
+                                </div>
+                                <span className="inline-flex items-center gap-1 text-[11px] bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <CheckCircle2 className="w-3.5 h-3.5" /> Verified Quote
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="p-2.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex items-center gap-2 text-xs text-blue-950 font-medium">
+                                <Clock className="w-3.5 h-3.5 text-blue-800 shrink-0" />
+                                <span>Quotation is being prepared by our master artisans.</span>
+                              </div>
+                            )}
+
+                            {inq.adminNotes && (
+                              <div className="p-2.5 bg-amber-50/70 border border-amber-200 rounded-xl text-xs">
+                                <span className="font-bold text-amber-900 flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3 text-amber-800" /> Admin Note:
+                                </span>
+                                <p className="text-zinc-700 italic mt-0.5 text-[11px]">&ldquo;{inq.adminNotes}&rdquo;</p>
+                              </div>
+                            )}
+
+                            {/* Workflow Progress (Compact Horizontal Bar) */}
+                            <div className="pt-2 border-t border-zinc-100">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                                  Workflow Progress
+                                </span>
+                                <span className="text-[10px] font-semibold text-zinc-500">
+                                  {inq.status === 'approved' ? 'Step 4 of 4' : inq.status === 'quoted' ? 'Step 3 of 4' : inq.status === 'in_review' ? 'Step 2 of 4' : 'Step 1 of 4'}
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-4 gap-1.5 text-center text-[10px]">
+                                <div
+                                  className={`py-1.5 px-1 rounded-lg font-bold border transition-colors ${
+                                    inq.status !== 'rejected'
+                                      ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
+                                      : 'bg-zinc-100 text-zinc-400 border-zinc-200'
+                                  }`}
+                                >
+                                  1. Submitted
+                                </div>
+                                <div
+                                  className={`py-1.5 px-1 rounded-lg font-bold border transition-colors ${
+                                    ['in_review', 'quoted', 'approved'].includes(inq.status)
+                                      ? 'bg-sky-50 text-sky-900 border-sky-300'
+                                      : 'bg-zinc-50 text-zinc-400 border-zinc-200'
+                                  }`}
+                                >
+                                  2. In Review
+                                </div>
+                                <div
+                                  className={`py-1.5 px-1 rounded-lg font-bold border transition-colors ${
+                                    ['quoted', 'approved'].includes(inq.status)
+                                      ? 'bg-purple-50 text-purple-900 border-purple-300'
+                                      : 'bg-zinc-50 text-zinc-400 border-zinc-200'
+                                  }`}
+                                >
+                                  3. Quoted
+                                </div>
+                                <div
+                                  className={`py-1.5 px-1 rounded-lg font-bold border transition-colors ${
+                                    inq.status === 'approved'
+                                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                                      : 'bg-zinc-50 text-zinc-400 border-zinc-200'
+                                  }`}
+                                >
+                                  4. Approved
+                                </div>
+                              </div>
                             </div>
                           </div>
 
-                          {inq.quotedPrice && inq.quotedPrice > 0 ? (
-                            <div className="p-4 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border-l-4 border-l-emerald-600 rounded-r-2xl border border-emerald-200">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
-                                    Official Quotation From Amba Lifestyle
-                                  </p>
-                                  <h4 className="text-2xl font-black text-emerald-700 mt-0.5">
-                                    ₹{inq.quotedPrice.toLocaleString()}{' '}
-                                    <span className="text-xs font-semibold text-emerald-600">INR</span>
-                                  </h4>
-                                </div>
-                                <span className="text-xs bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-xl shadow-xs">
-                                  Verified Quote
-                                </span>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="p-3.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex items-center gap-2 text-xs text-blue-900">
-                              <Clock className="w-4 h-4 text-blue-800 shrink-0" />
-                              <span>Quotation is being prepared by our master artisans and pricing team.</span>
-                            </div>
-                          )}
-
-                          {inq.adminNotes && (
-                            <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 mb-1">
-                                <MessageSquare className="w-3.5 h-3.5 text-blue-900" />
-                                <span>Note from Amba Lifestyle Admin:</span>
-                              </div>
-                              <p className="text-xs text-zinc-700 leading-relaxed italic">
-                                "{inq.adminNotes}"
-                              </p>
-                            </div>
-                          )}
-
-                          {/* DIRECT MESSAGE & INQUIRY CHAT THREAD WITH ADMIN */}
-                          <div className="p-4 bg-zinc-50/90 border border-zinc-200 rounded-2xl space-y-3">
-                            <div className="flex items-center justify-between border-b border-zinc-200/80 pb-2.5">
+                          {/* RIGHT COLUMN: DEDICATED LIVE CHAT CONSOLE WITH ADMIN (5 COLS) */}
+                          <div className="lg:col-span-5 bg-zinc-50/80 rounded-2xl border border-zinc-200/90 p-3.5 flex flex-col justify-between space-y-2.5">
+                            {/* Chat Header */}
+                            <div className="flex items-center justify-between border-b border-zinc-200/70 pb-2">
                               <div className="flex items-center gap-2">
-                                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-900 flex items-center justify-center">
-                                  <MessageSquare className="w-4 h-4" />
+                                <div className="w-7 h-7 rounded-lg bg-blue-900 text-white flex items-center justify-center shadow-xs">
+                                  <MessageSquare className="w-3.5 h-3.5" />
                                 </div>
                                 <div>
-                                  <h5 className="text-xs font-bold text-zinc-900">Send Message to Admin</h5>
-                                  <p className="text-[10px] text-zinc-500">Your message will directly show on the Super Admin panel</p>
+                                  <h5 className="text-xs font-bold text-zinc-900 leading-none">Message Admin</h5>
+                                  <p className="text-[10px] text-zinc-400 mt-0.5">Live inquiry conversation</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5">
                                 <button
                                   type="button"
                                   onClick={() => handleRefreshMyInquiries(false)}
                                   disabled={isRefreshingInquiries}
-                                  className="p-1 text-zinc-400 hover:text-blue-900 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                                  className="p-1 text-zinc-500 hover:text-blue-900 hover:bg-white rounded-lg transition-colors cursor-pointer border border-zinc-200/60 bg-white/80"
                                   title="Refresh live messages"
                                 >
-                                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingInquiries ? 'animate-spin text-blue-900' : ''}`} />
+                                  <RefreshCw className={`w-3 h-3 ${isRefreshingInquiries ? 'animate-spin text-blue-900' : ''}`} />
                                 </button>
-                                <span className="text-[10px] font-bold text-blue-900 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
-                                  {inq.messages && inq.messages.length > 0 ? `${inq.messages.length} Message${inq.messages.length > 1 ? 's' : ''}` : 'No messages yet'}
+                                <span className="text-[10px] font-bold text-blue-900 bg-white border border-blue-200 px-2 py-0.5 rounded-full shadow-2xs">
+                                  {inq.messages && inq.messages.length > 0
+                                    ? `${inq.messages.length} msg${inq.messages.length > 1 ? 's' : ''}`
+                                    : 'No messages'}
                                 </span>
                               </div>
                             </div>
 
-                            {/* Message History */}
-                            {inq.messages && inq.messages.length > 0 ? (
-                              <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
-                                {inq.messages.map((msg, mIdx) => {
+                            {/* Chat History Area (Compact Fixed Height Scrollable) */}
+                            <div className="h-44 sm:h-48 overflow-y-auto pr-1 space-y-2">
+                              {inq.messages && inq.messages.length > 0 ? (
+                                inq.messages.map((msg, mIdx) => {
                                   const isCustomer = msg.sender === 'customer';
                                   return (
                                     <div
                                       key={msg._id || mIdx}
                                       className={`flex flex-col ${isCustomer ? 'items-end' : 'items-start'}`}
                                     >
-                                      <div className="flex items-center gap-1.5 mb-1 px-1 text-[10px]">
+                                      <div className="flex items-center gap-1.5 mb-0.5 px-1 text-[9px]">
                                         <span className={`font-bold ${isCustomer ? 'text-blue-900' : 'text-emerald-700'}`}>
-                                          {isCustomer ? 'You (Customer)' : 'Amba Lifestyle Support Admin'}
+                                          {isCustomer ? 'You' : 'Amba Support'}
                                         </span>
                                         <span className="text-zinc-400">
-                                          {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                                          {msg.createdAt
+                                            ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                            : ''}
                                         </span>
                                       </div>
                                       <div
-                                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-medium leading-relaxed shadow-2xs ${isCustomer
-                                          ? 'bg-blue-900 text-white rounded-br-xs'
-                                          : 'bg-white text-zinc-800 border border-zinc-200/90 rounded-bl-xs'
-                                          }`}
+                                        className={`max-w-[90%] rounded-xl px-3 py-1.5 text-xs font-medium leading-relaxed shadow-2xs ${
+                                          isCustomer
+                                            ? 'bg-blue-900 text-white rounded-br-xs'
+                                            : 'bg-white text-zinc-800 border border-zinc-200/90 rounded-bl-xs'
+                                        }`}
                                       >
                                         <p className="whitespace-pre-wrap">{msg.message}</p>
                                       </div>
                                     </div>
                                   );
-                                })}
-                              </div>
-                            ) : (
-                              <p className="text-xs text-zinc-400 italic py-1">
-                                No messages sent yet. Write your message below to send it directly to the Admin.
-                              </p>
-                            )}
+                                })
+                              ) : (
+                                <div className="h-full flex flex-col items-center justify-center text-center p-3">
+                                  <MessageSquare className="w-6 h-6 text-zinc-300 mb-1" />
+                                  <p className="text-[11px] text-zinc-400 italic">
+                                    No messages yet. Send a direct query to our Super Admin below.
+                                  </p>
+                                </div>
+                              )}
+                            </div>
 
+                            {/* Message Success Toast */}
                             {messageSuccessToast && messageSuccessToast.id === (inq.inquiryNumber || inq._id) && (
-                              <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                                <span>Message delivered! It is now showing in the Admin Panel.</span>
+                              <div className="p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[11px] font-semibold flex items-center gap-1.5 animate-fadeIn">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                <span>Message delivered to Admin Panel!</span>
                               </div>
                             )}
 
-                            {/* Message Input Box */}
-                            <div className="pt-2 flex items-center gap-2">
+                            {/* Message Input & Send Action */}
+                            <div className="pt-1 flex items-center gap-1.5">
                               <input
                                 type="text"
-                                placeholder="Type your message for Admin here..."
+                                placeholder="Write to Admin..."
                                 value={messageInputs[inq.inquiryNumber || inq._id] || ''}
                                 onChange={(e) =>
                                   setMessageInputs((prev) => ({
@@ -2191,41 +2571,24 @@ export default function RequirementPortal() {
                                     handleSendMessage(inq);
                                   }
                                 }}
-                                className="flex-1 px-3.5 py-2 text-xs bg-white border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium text-zinc-800 placeholder:text-zinc-400"
+                                className="flex-1 px-3 py-1.5 text-xs bg-white border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 font-medium text-zinc-800 placeholder:text-zinc-400 shadow-2xs"
                               />
                               <button
                                 type="button"
                                 onClick={() => handleSendMessage(inq)}
-                                disabled={sendingMessageIds[inq.inquiryNumber || inq._id] || !(messageInputs[inq.inquiryNumber || inq._id] || '').trim()}
-                                className="px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
+                                disabled={
+                                  sendingMessageIds[inq.inquiryNumber || inq._id] ||
+                                  !(messageInputs[inq.inquiryNumber || inq._id] || '').trim()
+                                }
+                                className="px-3.5 py-1.5 bg-blue-900 hover:bg-blue-950 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 shrink-0"
                               >
                                 {sendingMessageIds[inq.inquiryNumber || inq._id] ? (
-                                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  <RefreshCw className="w-3 h-3 animate-spin" />
                                 ) : (
-                                  <Send className="w-3.5 h-3.5" />
+                                  <Send className="w-3 h-3" />
                                 )}
-                                <span>Send Message</span>
+                                <span>Send</span>
                               </button>
-                            </div>
-                          </div>
-
-                          <div className="pt-3 border-t border-zinc-100">
-                            <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
-                              Workflow Progress
-                            </p>
-                            <div className="grid grid-cols-4 gap-2 text-center text-[10px]">
-                              <div className={`p-2 rounded-lg font-bold ${inq.status !== 'rejected' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-zinc-100 text-zinc-400'}`}>
-                                1. Submitted
-                              </div>
-                              <div className={`p-2 rounded-lg font-bold ${['in_review', 'quoted', 'approved'].includes(inq.status) ? 'bg-sky-50 text-sky-800 border border-sky-200' : 'bg-zinc-100 text-zinc-400'}`}>
-                                2. In Review
-                              </div>
-                              <div className={`p-2 rounded-lg font-bold ${['quoted', 'approved'].includes(inq.status) ? 'bg-purple-50 text-purple-800 border border-purple-200' : 'bg-zinc-100 text-zinc-400'}`}>
-                                3. Quoted
-                              </div>
-                              <div className={`p-2 rounded-lg font-bold ${inq.status === 'approved' ? 'bg-emerald-500 text-white shadow-xs' : 'bg-zinc-100 text-zinc-400'}`}>
-                                4. Approved
-                              </div>
                             </div>
                           </div>
                         </div>
